@@ -1,0 +1,72 @@
+name: PR Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  INSTALL_PREFIX: /usr
+
+jobs:
+  build_test:
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+        - os: windows-latest
+          c_compiler: cl
+        - os: ubuntu-latest
+          c_compiler: gcc
+        - os: ubuntu-latest
+          c_compiler: clang
+        - os: macos-latest
+          c_compiler: gcc
+        - os: macos-latest
+          c_compiler: clang
+        exclude:
+        - os: windows-latest
+          c_compiler: gcc
+        - os: windows-latest
+          c_compiler: clang
+        - os: ubuntu-latest
+          c_compiler: cl
+        - os: macos-latest
+          c_compiler: cl
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+        
+    - name: Configure CMake 
+      shell: bash
+      run: |
+        mkdir build
+        cd build
+        cmake .. \
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+
+    - name: Build library
+      shell: bash
+      run: cmake --build ./build --config ${{ matrix.build_type }}
+
+    - name: Test library on non-windows 
+      if: ${{ !contains(matrix.os, 'windows')}}
+      run: ./build/test/test
+
+    - name: Test library on windows
+      if: ${{ contains(matrix.os, 'windows')}}
+      shell: bash
+      run: ./build/test/Release/test.exe
+
+    - name: Test installation
+      if: ${{ contains(matrix.os, 'ubuntu') }}
+      run: sudo cmake --install ./build
