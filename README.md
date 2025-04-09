@@ -1,10 +1,19 @@
-![ha-c-logo](https://avatars.githubusercontent.com/u/196289381?s=200&v=4)
+<p align="center">
+  <img width="346" alt="image" src="https://github.com/user-attachments/assets/74fa82a9-638a-44af-962b-45d2b358c22a" />
+</p>
 
-# Ha-C
+<p align="center">High performance C library collection</p>
+<p align="center"><img  alt="image" src="https://img.shields.io/badge/version-0.1.0-7446ff" /></p>
 
-![version](https://img.shields.io/badge/version-1.0.0-7446ff)
+## Library
 
-C library collection.
+<details>
+
+<summary>Test</summary>
+
+**[`hac_ut`](/hac_ut/README.md)**
+
+</details>
 
 ## Installation
 
@@ -17,14 +26,20 @@ mkdir build && cd build
 # Configure CMake
 cmake .. \
   -DCMAKE_C_COMPILER=gcc \ # choose a c compiler
-  -DCMAKE_INSTALL_PREFIX=/usr \ # target install directory path prefix
+  -DCMAKE_INSTALL_PREFIX=/usr \ # target installation directory path prefix
   -DCMAKE_BUILD_TYPE=Release 
+  
+# Build all libs
+cmake --build .
+
+# Build specific shared and static libs
+# cmake --build . --target hac_{lib} hac_{lib}_static 
 
 # Install
-sudo cmake --install . 
+sudo cmake --install .  # make sure you have the right permission to access the installation path
 ```
 
-After installation, the header files are in the `/usr/include/sum` while the static and dynamic libraries are in the `/usr/lib`.
+After installation, the header files are in the `/usr/include/hac` while the static and dynamic libraries are in the `/usr/lib/hac`.
 
 ## Usage
 
