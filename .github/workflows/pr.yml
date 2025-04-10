@@ -23,6 +23,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup MSVC ARM64 Toolchain
+      if: ${{ matrix.arch == 'arm64' }}
+      shell: cmd
+      run: |
+        echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat" >> $env:GITHUB_ENV 
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat"
+
     - name: Configure CMake 
       shell: bash
       run: |
@@ -43,8 +50,7 @@ jobs:
       shell: bash
       run: ./build/test/Release/test.exe
 
-    - name: Verify library in arm64
+    - name: Verify library on arm64
       if: ${{ matrix.arch == 'arm64' }}
-      shell: bash
-      run: dumpbin /headers build/test/Release/test.exe | findstr "machine"
+      run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
     
