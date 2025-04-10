@@ -51,10 +51,21 @@ jobs:
         mkdir build
         cd build
         cmake .. \
-        -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }} \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
         -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX
+
+    - name: Set CMake Arch on non-windows
+      shell: bash
+      if: ${{ !contains(matrix.os, 'windows')}}
+      run: |
+        cmake . -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
+      
+    - name: Set CMake Arch on windows
+      shell: bash
+      if: ${{ contains(matrix.os, 'windows')}}
+      run: |
+        cmake . -A ${{ matrix.arch }}
 
     - name: Build library
       shell: bash
