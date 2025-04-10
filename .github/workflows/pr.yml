@@ -35,12 +35,15 @@ jobs:
           c_compiler: gcc
         - os: windows-latest
           c_compiler: clang
+        - os: windows-latest
           arch: x86_64
         - os: ubuntu-latest
           c_compiler: cl
+        - os: ubuntu-latest
           arch: x64
         - os: macos-latest
           c_compiler: cl
+        - os: macos-latest
           arch: x64
 
     runs-on: ${{ matrix.os }}
