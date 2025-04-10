@@ -61,7 +61,12 @@ jobs:
     strategy:
       matrix:
         arch: [x86_64, arm64, armv7]
-        c_compiler: [gcc, clang]
+        c_compiler: [gcc, clang, arm-linux-gnueabihf-gcc]
+      exclude:
+      - arch: armv7
+        c_compiler: gcc
+      - arch: armv7
+        c_compiler: clang
 
     runs-on: ubuntu-latest
 
@@ -84,11 +89,6 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
-
-    - name: Set CMake Arch on armv7
-      if: ${{ matrix.arch == 'armv7' }}
-      shell: bash
-      run: cmake . -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/toolchain-armv7.cmake
     
     - name: Build library
       shell: bash
