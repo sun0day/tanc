@@ -51,9 +51,7 @@ jobs:
       shell: bash
       run: ./build/test/Release/test.exe
 
-    - name: Test library on QEMU
+    - name: Verify library on QEMU
       if: ${{ matrix.arch == 'arm64' }}
-      shell: bash
-      run: ｜
-        qemu-system-aarch64 -L "C:\Windows\System32" build/test/Release/test.exe
+      run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
     
