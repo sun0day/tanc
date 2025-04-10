@@ -15,7 +15,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        arch: [x64, arm64]
+        arch: [x64, ARM64]
         c_compiler: [cl]
 
     runs-on: windows-latest
