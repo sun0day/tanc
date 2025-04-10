@@ -27,7 +27,8 @@ jobs:
       if: ${{ matrix.arch == 'arm64' }}
       shell: cmd
       run: |
-        echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat" >> $env:GITHUB_ENV \
+        choco install qemu -y 
+        echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat" >> $env:GITHUB_ENV 
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat"
 
     - name: Configure CMake 
@@ -46,6 +47,12 @@ jobs:
       run: cmake --build ./build --config $BUILD_TYPE
 
     - name: Test library 
+      if: ${{ matrix.arch == 'x64' }}
       shell: bash
       run: ./build/test/Release/test.exe
+
+    - name: Test library on QEMU
+      if: ${{ matrix.arch == 'arm64' }}
+      shell: bash
+      run: qemu-aarch64 -L "C:\Windows\System32" build/test/Release/test.exe
     
