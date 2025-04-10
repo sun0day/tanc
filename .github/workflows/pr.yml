@@ -7,6 +7,7 @@ on:
     branches: [ "main" ]
 env:
   INSTALL_PREFIX: /usr
+  BUILD_TYPE: Release
 
 jobs:
   build_test_on_windows:
@@ -16,7 +17,6 @@ jobs:
       matrix:
         arch: [x64, arm64]
         c_compiler: [cl]
-        build_type: [Release]
 
     runs-on: windows-latest
 
@@ -30,12 +30,11 @@ jobs:
         cd build
         cmake .. \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-        -A ${{ matrix.arch }}
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
     - name: Build library
       shell: bash
-      run: cmake --build ./build --config ${{ matrix.build_type }}
+      run: cmake --build ./build -A ${{ matrix.arch }} --config $BUILD_TYPE
 
     - name: Test library 
       shell: bash
