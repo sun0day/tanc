@@ -67,6 +67,10 @@ jobs:
           c_compiler: gcc
         - arch: armv7
           c_compiler: clang
+        - arch: x86_64
+          c_compiler: arm-linux-gnueabihf-gcc
+        - arch: arm64
+          c_compiler: arm-linux-gnueabihf-gcc
 
     runs-on: ubuntu-latest
 
