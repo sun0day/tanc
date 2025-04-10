@@ -52,5 +52,6 @@ jobs:
 
     - name: Verify library on arm64
       if: ${{ matrix.arch == 'arm64' }}
+      shell: cmd
       run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
     
