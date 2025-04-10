@@ -99,8 +99,15 @@ jobs:
       run: cmake --build ./build --config $BUILD_TYPE
 
     - name: Test library 
+      if: ${{ matrix.arch != 'armv7' }}
       shell: bash
       run: ./build/test/test
+
+    - name: Test library on armv7
+      if: ${{ matrix.arch == 'armv7' }}
+      shell: bash
+      run: |
+        qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
 
     - name: Test installation
       if: ${{ matrix.arch != 'armv7' }}
