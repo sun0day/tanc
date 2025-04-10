@@ -43,7 +43,8 @@ jobs:
       shell: bash
       run: ./build/test/Release/test.exe
 
-    - name: Verify library on QEMU
+    - name: Verify library in arm64
       if: ${{ matrix.arch == 'arm64' }}
-      run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
+      shell: bash
+      run: dumpbin /headers build/test/Release/test.exe | findstr "machine"
     
