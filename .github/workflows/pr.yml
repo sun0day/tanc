@@ -25,9 +25,10 @@ jobs:
 
     - name: Setup MSVC ARM64 Toolchain
       if: ${{ matrix.arch == 'arm64' }}
+      shell: cmd
       run: |
         echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat" >> $env:GITHUB_ENV \
-        C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsamd64_arm64.bat"
 
     - name: Configure CMake 
       shell: bash
