@@ -61,28 +61,35 @@ jobs:
     strategy:
       matrix:
         arch: [x86_64, arm64, armv7]
-        c_compiler: [gcc, clang, arm-linux-gnueabihf-gcc]
-        exclude:
-        - arch: armv7
-          c_compiler: gcc
-        - arch: armv7
+        c_compiler: [gcc, clang, arm-linux-gnueabihf-gcc, aarch64-linux-gnu-gcc]
+        include:
+        - arch: x86_64
           c_compiler: clang
         - arch: x86_64
+          c_compiler: gcc
+        - arch: armv7
           c_compiler: arm-linux-gnueabihf-gcc
         - arch: arm64
-          c_compiler: arm-linux-gnueabihf-gcc
+          c_compiler: aarch64-linux-gnu-gcc
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set up QEMU
+      if: ${{ matrix.arch != 'x86_64' }}
+      uses: docker/setup-qemu-action@v3
+
     - name: Install ARM Toolchain
-      if: ${{ matrix.arch == 'armv7' }}
+      if: ${{ matrix.arch != 'x86_64' }}
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-arm-linux-gnueabihf qemu-user-static
+        sudo apt-get install -y \
+          gcc-arm-linux-gnueabihf \
+          gcc-aarch64-linux-gnu \
+          qemu-user-static 
 
     - name: Configure CMake 
       shell: bash
@@ -101,7 +108,7 @@ jobs:
         file ./build/test/test
 
     - name: Test library 
-      if: ${{ matrix.arch != 'armv7' }}
+      if: ${{ matrix.arch == 'x86_64' }}
       shell: bash
       run: ./build/test/test
 
@@ -111,8 +118,14 @@ jobs:
       run: |
         qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
 
+    - name: Test library on arm64
+      if: ${{ matrix.arch == 'arm64' }}
+      shell: bash
+      run: |
+        qemu-aarch64-static -L /usr/aarch64-linux-gnu ./build/test/test
+
     - name: Test installation
-      if: ${{ matrix.arch != 'armv7' }}
+      if: ${{ matrix.arch == 'x86_64' }}
       run: sudo cmake --install ./build
 
   build_test_on_macos:
@@ -140,7 +153,9 @@ jobs:
     
     - name: Build library
       shell: bash
-      run: cmake --build ./build --config $BUILD_TYPE
+      run: |
+        cmake --build ./build --config $BUILD_TYPE
+        file ./build/test/test
 
     - name: Test library 
       shell: bash
