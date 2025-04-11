@@ -197,7 +197,11 @@ jobs:
         cpu_count: 4
         environment_variables: 'BUILD_TYPE'
         run: |
-          sudo pkg install -y -f cmake
+          case "${{ matrix.os }}" in
+            freebsd)   sudo pkg install -y -f cmake ;;
+            netbsd)   sudo pkgin install -y cmake ;;
+            openbsd) sudo pkgin install -y cmake ;;
+          esac
           mkdir build && cd build
           cmake .. \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
