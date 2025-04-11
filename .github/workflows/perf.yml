@@ -66,8 +66,8 @@ jobs:
       # TODO: benchmark runner
 
       - uses: actions-ecosystem/action-create-comment@v1
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' }}
         with:
           github_token: ${{ secrets.github_token }}
           body: |
-            See perf results at https://github.com/${{ github.event.repository.name }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+            See perf results at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
