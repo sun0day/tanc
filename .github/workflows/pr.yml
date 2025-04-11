@@ -86,12 +86,12 @@ jobs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y \
-          gcc-arm-linux-gnueabihf \
-          gcc-aarch64-linux-gnu \
-          gcc-riscv64-linux-gnu \
-          gcc-mips-linux-gnu \
-          qemu-user-static 
+        case "${{ matrix.arch }}" in
+          armv7)   sudo apt-get install -y gcc-arm-linux-gnueabihf ;;
+          arm64)   sudo apt-get install -y gcc-aarch64-linux-gnu ;;
+          riscv64) sudo apt-get install -y gcc-riscv64-linux-gnu ;;
+          mips)    sudo apt-get install -y gcc-mips-linux-gnu ;;
+        esac
 
     - name: Configure CMake 
       shell: bash
