@@ -1,6 +1,6 @@
 /*
  * @version 1.0.0
- * @copyright 2025 sun0day 
+ * @copyright 2025 sun0day
  * @description MATH sum
  */
 

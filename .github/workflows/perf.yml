@@ -1,0 +1,20 @@
+name: PR Perf
+on:
+  issue_comment:
+    types: [created]
+    branches: [main]
+
+jobs:
+  run-on-comment:
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/perf-run') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref }}
+
+      - name: Run Script
+        id: run-script
+        run: |
+          echo "perffffff"
