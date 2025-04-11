@@ -206,6 +206,7 @@ jobs:
       uses: cross-platform-actions/action@v0.27.0
       env:
         BUILD_TYPE: $BUILD_TYPE
+        TEST_RUN: $TEST_RUN
       with:
         operating_system: ${{ matrix.os }}
         architecture: ${{ matrix.arch }}
@@ -213,7 +214,7 @@ jobs:
         shell: bash
         memory: 5G
         cpu_count: 4
-        environment_variables: 'BUILD_TYPE'
+        environment_variables: 'BUILD_TYPE TEST_RUN'
         run: |
           case "${{ matrix.os }}" in
             freebsd)  sudo pkg install -y -f cmake ;;
