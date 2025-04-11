@@ -17,4 +17,4 @@ jobs:
       - name: Run Script
         id: run-script
         run: |
-          echo "perffffff"
+          echo "perf start"
