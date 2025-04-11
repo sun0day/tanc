@@ -69,6 +69,8 @@ jobs:
           c_compiler: aarch64-linux-gnu-gcc
         - arch: riscv64
           c_compiler: riscv64-linux-gnu-gcc
+        - arch: mips
+          c_compiler: mips-linux-gnu-gcc
 
     runs-on: ubuntu-latest
 
@@ -88,6 +90,7 @@ jobs:
           gcc-arm-linux-gnueabihf \
           gcc-aarch64-linux-gnu \
           gcc-riscv64-linux-gnu \
+          gcc-mips-linux-gnu \
           qemu-user-static 
 
     - name: Configure CMake 
@@ -117,6 +120,8 @@ jobs:
           qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
         elif [ "${{ matrix.arch }}" == "riscv64" ]; then
           qemu-riscv64-static -L /usr/riscv64-linux-gnu ./build/test/test
+        elif [ "${{ matrix.arch }}" == "mips" ]; then
+          qemu-mips-static -L /usr/mips-linux-gnu ./build/test/test
         fi
 
     - name: Test installation
