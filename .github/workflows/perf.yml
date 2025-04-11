@@ -4,17 +4,69 @@ on:
     types: [created]
     branches: [main]
 
+env:
+  BUILD_TYPE: Release
+
 jobs:
-  run-on-comment:
+  test_perf:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/perf-run') }}
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        c_compiler: [gcc, clang, cl]
+        exclude:
+        - os: ubuntu-latest
+          c_compiler: cl
+        - os: macos-latest
+          c_compiler: cl
+        - os: windows-latest
+          c_compiler: gcc
+        - os: windows-latest
+          c_compiler: clang
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.issue.pull_request.head.ref }}
 
-      - name: Run Script
-        id: run-script
+      - name: Display system info
+        shell: bash
         run: |
-          echo "perffffff"
+          uname -a
+          case "${{ matrix.os }}" in
+            macos-latest)  top -l 1 -s 0 | grep PhysMem ;;
+            ubuntu-latest) free -h ;;
+            windows-latest) systeminfo ;;
+          esac
+          
+
+      - name: Install hyperfine
+        shell: bash
+        run: |
+          case "${{ matrix.os }}" in
+            macos-latest)  brew install hyperfine ;;
+            ubuntu-latest) wget https://github.com/sharkdp/hyperfine/releases/download/v1.19.0/hyperfine_1.19.0_amd64.deb && sudo dpkg -i hyperfine_1.19.0_amd64.deb ;;
+            windows-latest) choco install hyperfine ;;
+          esac
+
+      - name: Configure CMake 
+        shell: bash
+        run: |
+          mkdir build
+          cd build
+          cmake .. \
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
+      
+      - name: Build library
+        shell: bash
+        run: cmake --build ./build --config $BUILD_TYPE
+
+      # TODO: benchmark runner
+
+      - uses: actions-ecosystem/action-create-comment@v1
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'gcc' }}
+        with:
+          github_token: ${{ secrets.github_token }}
+          body: |
+            See [perf results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
