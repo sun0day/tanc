@@ -184,7 +184,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Test on freebsd
+    - name: Build and test
       uses: cross-platform-actions/action@v0.27.0
       env:
         BUILD_TYPE: $BUILD_TYPE
@@ -199,7 +199,7 @@ jobs:
         run: |
           case "${{ matrix.os }}" in
             freebsd)  sudo pkg install -y -f cmake ;;
-            netbsd)   sudo pkgin -y update && sudo pkgin install cmake ;;
+            netbsd)   sudo pkgin -y update && sudo pkgin -y install cmake ;;
             openbsd) sudo pkg_add -u && sudo pkg_add install cmake ;;
           esac
           mkdir build && cd build
