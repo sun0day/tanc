@@ -168,11 +168,11 @@ jobs:
       contents: write
     strategy:
       matrix:
+        os: [freebsd]
+        version: ['14.2']
         arch: [x86-64, arm64]
         c_compiler: [clang]
         include:
-        - os: freebsd
-          version: '14.2'
         - os: openbsd
           version: '7.6'
         - os: netbsd
