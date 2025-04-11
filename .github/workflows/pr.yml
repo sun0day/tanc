@@ -167,7 +167,7 @@ jobs:
         memory: 5G
         cpu_count: 4
         run: |
-          sudo pkg install cmake
+          sudo pkg install -y -f cmake
           mkdir build && cd build
           cmake .. \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
