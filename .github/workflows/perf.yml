@@ -70,4 +70,4 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           body: |
-            See perf results at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            See [perf results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
