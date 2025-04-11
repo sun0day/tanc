@@ -170,7 +170,7 @@ jobs:
       matrix:
         os: [freebsd, openbsd, netbsd]
         arch: [x86-64, arm64]
-        c_compiler: [clang]
+        c_compiler: [clang, gcc]
         include:
         - os: freebsd
           version: '14.2'
@@ -178,10 +178,13 @@ jobs:
           version: '7.6'
         - os: netbsd
           version: '10.1'
-          c_compiler: gcc
         exclude:
         - os: netbsd
           c_compiler: clang
+        - os: freebsd
+          c_compiler: gcc
+        - os: openbsd
+          c_compiler: gcc
 
     runs-on: ubuntu-latest
 
