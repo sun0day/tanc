@@ -60,13 +60,9 @@ jobs:
       contents: write
     strategy:
       matrix:
-        arch: [x86_64, arm64, armv7]
-        c_compiler: [gcc, clang, arm-linux-gnueabihf-gcc, aarch64-linux-gnu-gcc]
+        arch: [x86_64]
+        c_compiler: [gcc, clang]
         include:
-        - arch: x86_64
-          c_compiler: clang
-        - arch: x86_64
-          c_compiler: gcc
         - arch: armv7
           c_compiler: arm-linux-gnueabihf-gcc
         - arch: arm64
