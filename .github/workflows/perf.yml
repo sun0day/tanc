@@ -30,6 +30,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Display system info
+        shell: bash
+        run: |
+          uname -a
+          case "${{ matrix.os }}" in
+            macos-latest)  top -l 1 -s 0 | grep PhysMem ;;
+            ubuntu-latest) free -h ;;
+            windows-latest) free -h ;;
+          esac
+          
+
       - name: Install hyperfine
         shell: bash
         run: |
