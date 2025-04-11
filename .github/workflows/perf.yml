@@ -44,7 +44,11 @@ jobs:
       - name: Install hyperfine
         shell: bash
         run: |
-          uname -a
+          case "${{ matrix.os }}" in
+            macos-latest)  brew install hyperfine ;;
+            ubuntu-latest) wget https://github.com/sharkdp/hyperfine/releases/download/v1.19.0/hyperfine_1.19.0_amd64.deb && sudo dpkg -i hyperfine_1.19.0_amd64.deb ;;
+            windows-latest) choco install hyperfine ;;
+          esac
 
       - name: Configure CMake 
         shell: bash
