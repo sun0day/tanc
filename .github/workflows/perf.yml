@@ -29,6 +29,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        shell: bash
+        run: |
+          uname -a
 
       - name: Configure CMake 
         shell: bash
