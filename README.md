@@ -65,3 +65,21 @@ Calculate two `integer`s sum.
 
 
 
+## Support
+
+**Most** of the repo's libs work on:
+
+### Compiler
+
+gcc, clang, msvc
+
+### C standard
+
+C11
+
+### OS and arch
+
+- windows(x64, arm64)
+- macos(x64, arm64)
+- freebsd@14, openbsd@7, netbsd@10(x64, arm64)
+- linux(x64, arm64, armv7, riscv64, mips)
