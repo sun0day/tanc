@@ -29,6 +29,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install hyperfine
         shell: bash
         run: |
           uname -a
