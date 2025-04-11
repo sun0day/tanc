@@ -163,13 +163,20 @@ jobs:
       shell: bash
       run: ./build/test/test
 
-  build_test_on_freebsd:
+  build_test_on_bsd:
     permissions:
       contents: write
     strategy:
       matrix:
         arch: [x86-64, arm64]
         c_compiler: [clang]
+        include:
+        - os: freebsd
+          version: '14.2'
+        - os: openbsd
+          version: '7.6'
+        - os: netbsd
+          version: '10.1'
 
     runs-on: ubuntu-latest
 
@@ -181,9 +188,9 @@ jobs:
       env:
         BUILD_TYPE: $BUILD_TYPE
       with:
-        operating_system: freebsd
+        operating_system: ${{ matrix.os }}
         architecture: ${{ matrix.arch }}
-        version: '14.2'
+        version: ${{ matrix.version }}
         shell: bash
         memory: 5G
         cpu_count: 4
