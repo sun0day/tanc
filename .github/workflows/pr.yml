@@ -205,8 +205,8 @@ jobs:
     - name: Build and test
       uses: cross-platform-actions/action@v0.27.0
       env:
-        BUILD_TYPE: $BUILD_TYPE
-        TEST_RUN: $TEST_RUN
+        BUILD_TYPE: ${{ env.BUILD_TYPE }}
+        TEST_RUN: ${{ env.TEST_RUN }}
       with:
         operating_system: ${{ matrix.os }}
         architecture: ${{ matrix.arch }}
@@ -224,7 +224,7 @@ jobs:
           mkdir build && cd build
           env | sort
           echo $BUILD_TYPE $TEST_RUN
-          TEST_RUN=$TEST_RUN cmake .. \
+          cmake .. \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
