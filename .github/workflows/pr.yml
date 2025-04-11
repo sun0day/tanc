@@ -67,6 +67,8 @@ jobs:
           c_compiler: arm-linux-gnueabihf-gcc
         - arch: arm64
           c_compiler: aarch64-linux-gnu-gcc
+        - arch: riscv64
+          c_compiler: gcc-riscv64-linux-gnu
 
     runs-on: ubuntu-latest
 
@@ -85,6 +87,7 @@ jobs:
         sudo apt-get install -y \
           gcc-arm-linux-gnueabihf \
           gcc-aarch64-linux-gnu \
+          gcc-riscv64-linux-gnu \
           qemu-user-static 
 
     - name: Configure CMake 
@@ -108,17 +111,19 @@ jobs:
       shell: bash
       run: ./build/test/test
 
-    - name: Test library on armv7
-      if: ${{ matrix.arch == 'armv7' }}
-      shell: bash
-      run: |
-        qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
-
     - name: Test library on arm64
       if: ${{ matrix.arch == 'arm64' }}
       shell: bash
       run: |
-        qemu-aarch64-static -L /usr/aarch64-linux-gnu ./build/test/test
+        if [ "${{ matrix.arch }}" == "x86_64" ]; then
+          ./build/test/test
+        elif [ "${{ matrix.arch }}" == "arm64" ]; then
+          qemu-aarch64-static -L /usr/aarch64-linux-gnu ./build/test/test
+        elif [ "${{ matrix.arch }}" == "armv7" ]; then
+          qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
+        elif [ "${{ matrix.arch }}" == "riscv64" ]; then
+          qemu-riscv64-static -L /usr/riscv64-linux-gnu ./build/test/test
+        fi
 
     - name: Test installation
       if: ${{ matrix.arch == 'x86_64' }}
