@@ -222,7 +222,7 @@ jobs:
             openbsd) sudo pkg_add -u && sudo pkg_add install cmake ;;
           esac
           mkdir build && cd build
-          cmake .. \
+          TEST_RUN=$TEST_RUN cmake .. \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
