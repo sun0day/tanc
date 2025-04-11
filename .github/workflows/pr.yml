@@ -159,6 +159,8 @@ jobs:
 
     - name: Test on freebsd
       uses: cross-platform-actions/action@v0.27.0
+      env:
+        BUILD_TYPE: $BUILD_TYPE
       with:
         operating_system: freebsd
         architecture: ${{ matrix.arch }}
@@ -166,6 +168,7 @@ jobs:
         shell: bash
         memory: 5G
         cpu_count: 4
+        environment_variables: 'BUILD_TYPE'
         run: |
           sudo pkg install -y -f cmake
           mkdir build && cd build
