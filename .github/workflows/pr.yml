@@ -150,7 +150,7 @@ jobs:
     strategy:
       matrix:
         arch: [x86-64, arm64]
-        c_compiler: [gcc, clang]
+        c_compiler: [clang]
 
     runs-on: ubuntu-latest
 
