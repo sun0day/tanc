@@ -106,13 +106,7 @@ jobs:
         cmake --build ./build --config $BUILD_TYPE
         file ./build/test/test
 
-    - name: Test library 
-      if: ${{ matrix.arch == 'x86_64' }}
-      shell: bash
-      run: ./build/test/test
-
-    - name: Test library on arm64
-      if: ${{ matrix.arch == 'arm64' }}
+    - name: Test library
       shell: bash
       run: |
         if [ "${{ matrix.arch }}" == "x86_64" ]; then
