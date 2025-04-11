@@ -37,7 +37,7 @@ jobs:
           case "${{ matrix.os }}" in
             macos-latest)  top -l 1 -s 0 | grep PhysMem ;;
             ubuntu-latest) free -h ;;
-            windows-latest) free -h ;;
+            windows-latest) systeminfo | find "Total Physical Memory" ;;
           esac
           
 
