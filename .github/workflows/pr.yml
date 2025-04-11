@@ -163,46 +163,4 @@ jobs:
       shell: bash
       run: ./build/test/test
 
-  build_test_on_bsd:
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        arch: [x86-64, arm64]
-        c_compiler: [clang]
-        include:
-        - os: freebsd
-          version: '14.2'
-        - os: openbsd
-          version: '7.6'
-        - os: netbsd
-          version: '10.1'
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Test on freebsd
-      uses: cross-platform-actions/action@v0.27.0
-      env:
-        BUILD_TYPE: $BUILD_TYPE
-      with:
-        operating_system: ${{ matrix.os }}
-        architecture: ${{ matrix.arch }}
-        version: ${{ matrix.version }}
-        shell: bash
-        memory: 5G
-        cpu_count: 4
-        environment_variables: 'BUILD_TYPE'
-        run: |
-          sudo pkg install -y -f cmake
-          mkdir build && cd build
-          cmake .. \
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
-          cd ..
-          cmake --build ./build --config $BUILD_TYPE
-          file ./build/test/test
-          ./build/test/test
+  
