@@ -145,7 +145,8 @@ jobs:
         cmake .. \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-        -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
+        -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }} \
+        -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
     
     - name: Build library
       shell: bash
