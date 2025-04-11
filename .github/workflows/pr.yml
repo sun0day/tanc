@@ -192,4 +192,5 @@ jobs:
           -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
           cd ..
           cmake --build ./build --config $BUILD_TYPE
+          file ./build/test/test
           ./build/test/test
