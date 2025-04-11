@@ -87,7 +87,7 @@ jobs:
       run: |
         sudo apt-get update
         case "${{ matrix.arch }}" in
-          armv7)   sudo apt-get install -y gcc-arm-linux-gnueabihf ;;
+          armv7)   sudo apt-get install -y gcc-arm-linux-gnueabihf qemu-arm-static;;
           arm64)   sudo apt-get install -y gcc-aarch64-linux-gnu ;;
           riscv64) sudo apt-get install -y gcc-riscv64-linux-gnu ;;
           mips)    sudo apt-get install -y gcc-mips-linux-gnu ;;
