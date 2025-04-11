@@ -68,7 +68,7 @@ jobs:
         - arch: arm64
           c_compiler: aarch64-linux-gnu-gcc
         - arch: riscv64
-          c_compiler: gcc-riscv64-linux-gnu
+          c_compiler: riscv64-linux-gnu-gcc
 
     runs-on: ubuntu-latest
 
