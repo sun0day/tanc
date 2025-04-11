@@ -62,3 +62,11 @@ jobs:
       - name: Build library
         shell: bash
         run: cmake --build ./build --config $BUILD_TYPE
+
+      # TODO: benchmark runner
+
+      - uses: actions-ecosystem/action-create-comment@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          body: |
+            Hello, @${{ github.actor }}!
