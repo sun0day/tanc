@@ -178,6 +178,11 @@ jobs:
           version: '7.6'
         - os: netbsd
           version: '10.1'
+        - os: netbsd
+          c_compiler: gcc
+        exclude:
+        - os: netbsd
+          c_compiler: clang
 
     runs-on: ubuntu-latest
 
