@@ -96,7 +96,9 @@ jobs:
     
     - name: Build library
       shell: bash
-      run: cmake --build ./build --config $BUILD_TYPE
+      run: |
+        cmake --build ./build --config $BUILD_TYPE
+        file ./build/test/test
 
     - name: Test library 
       if: ${{ matrix.arch != 'armv7' }}
