@@ -140,6 +140,7 @@ jobs:
           -w ${{ github.workspace }} \
           -e C_COMPILER=${{ matrix.c_compiler }} \
           -e BUILD_TYPE=$BUILD_TYPE \
+          -e TEST_RUN=$TEST_RUN \
           --platform ${{ matrix.arch }} \
           debian:unstable-slim \
           sh -c "chmod +x ./qemu.sh && ./qemu.sh"
