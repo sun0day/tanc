@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 mkdir build 
 cd build 
 cmake .. -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
