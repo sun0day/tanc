@@ -118,7 +118,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        arch: [linux/386, linux/riscv64, linux/arm64, linux/arm/v6, linux/arm/v7, linux/s390x, linux/mips64]
+        arch: [linux/386, linux/riscv64, linux/arm64, linux/arm/v6, linux/arm/v7, linux/s390x]
         c_compiler: [gcc]
 
     runs-on: ubuntu-latest
