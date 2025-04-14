@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="346" alt="image" src="https://github.com/user-attachments/assets/74fa82a9-638a-44af-962b-45d2b358c22a" />
+  <img width="346" alt="image" src="https://github.com/user-attachments/assets/57899b1f-10e4-4181-930f-606f29eacf56" />
 </p>
 
 <p align="center">High performance C library collection</p>
@@ -11,13 +11,13 @@
 
 <summary>Test</summary>
 
-**[`hac_ut`](/hac_ut/README.md)**
+**[`tanc_ut`](/tanc_ut/README.md)**
 
 </details>
 
 ## Installation
 
-`Ha-C` uses `CMake` to build and install libraries.
+`Tanc` uses `CMake` to build and install libraries.
 
 ```shell
 # Create output dir
@@ -33,13 +33,13 @@ cmake .. \
 cmake --build .
 
 # Build specific shared and static libs
-# cmake --build . --target hac_{lib} hac_{lib}_static 
+# cmake --build . --target tanc_{lib} tanc_{lib}_static 
 
 # Install
 sudo cmake --install .  # make sure you have the right permission to access the installation path
 ```
 
-After installation, the header files are in the `/usr/include/hac` while the static and dynamic libraries are in the `/usr/lib/hac`.
+After installation, the header files are in the `/usr/include/tanc` while the static and dynamic libraries are in the `/usr/lib/tanc`.
 
 ## Usage
 
