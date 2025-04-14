@@ -77,44 +77,18 @@ jobs:
       shell: cmd
       run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
 
-  build_test_on_ubuntu:
+  build_test_on_ubuntu_x86:
     permissions:
       contents: write
     strategy:
       matrix:
         arch: [x86_64]
         c_compiler: [gcc, clang]
-        include:
-        - arch: armv7
-          c_compiler: arm-linux-gnueabihf-gcc
-        - arch: arm64
-          c_compiler: aarch64-linux-gnu-gcc
-        - arch: riscv64
-          c_compiler: riscv64-linux-gnu-gcc
-        - arch: mips
-          c_compiler: mips-linux-gnu-gcc
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Set up QEMU
-      if: ${{ matrix.arch != 'x86_64' }}
-      uses: docker/setup-qemu-action@v3
-
-    - name: Install ARM Toolchain
-      if: ${{ matrix.arch != 'x86_64' }}
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y qemu-user-static
-        case "${{ matrix.arch }}" in
-          armv7)   sudo apt-get install -y gcc-arm-linux-gnueabihf ;;
-          arm64)   sudo apt-get install -y gcc-aarch64-linux-gnu ;;
-          riscv64) sudo apt-get install -y gcc-riscv64-linux-gnu ;;
-          mips)    sudo apt-get install -y gcc-mips-linux-gnu ;;
-        esac
 
     - name: Configure CMake 
       shell: bash
@@ -123,8 +97,7 @@ jobs:
         cd build
         cmake .. \
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-        -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE
     
     - name: Build library
       shell: bash
@@ -135,21 +108,41 @@ jobs:
     - name: Test library
       shell: bash
       run: |
-        if [ "${{ matrix.arch }}" == "x86_64" ]; then
-          ./build/test/test
-        elif [ "${{ matrix.arch }}" == "arm64" ]; then
-          qemu-aarch64-static -L /usr/aarch64-linux-gnu ./build/test/test
-        elif [ "${{ matrix.arch }}" == "armv7" ]; then
-          qemu-arm-static -L /usr/arm-linux-gnueabihf ./build/test/test
-        elif [ "${{ matrix.arch }}" == "riscv64" ]; then
-          qemu-riscv64-static -L /usr/riscv64-linux-gnu ./build/test/test
-        elif [ "${{ matrix.arch }}" == "mips" ]; then
-          qemu-mips-static -L /usr/mips-linux-gnu ./build/test/test
-        fi
+        ./build/test/test
 
     - name: Test installation
-      if: ${{ matrix.arch == 'x86_64' }}
       run: sudo cmake --install ./build
+
+  build_test_on_qemu:
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        arch: [linux/386, linux/riscv64, linux/arm64, linux/arm/v6, linux/arm/v7, linux/s390x, linux/mips]
+        c_compiler: [gcc, clang]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.arch }}
+
+      - name: Build and test
+        run: |
+          docker run \
+            --rm \
+            -v $(pwd):/${{ github.workspace }} \
+            -w ${{ github.workspace }} \
+            -e C_COMPILER=${{ matrix.c_compiler }} \
+            -e BUILD_TYPE=$BUILD_TYPE
+            --platform ${{ matrix.arch }} \
+            debian:unstable-slim \
+            ./qemu.sh
+            
 
   build_test_on_macos:
     permissions:
