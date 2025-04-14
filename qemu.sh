@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-apt update && apt install -y cmake
+apt update && apt install -y cmake g++
 
 mkdir build 
 cd build 
