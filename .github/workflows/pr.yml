@@ -132,16 +132,17 @@ jobs:
           platforms: ${{ matrix.arch }}
 
       - name: Build and test
+        shell: bash
         run: |
           docker run \
-            --rm \
-            -v $(pwd):/${{ github.workspace }} \
-            -w ${{ github.workspace }} \
-            -e C_COMPILER=${{ matrix.c_compiler }} \
-            -e BUILD_TYPE=$BUILD_TYPE
-            --platform ${{ matrix.arch }} \
-            debian:unstable-slim \
-            ./qemu.sh
+          --rm \
+          -v $(pwd):/${{ github.workspace }} \
+          -w ${{ github.workspace }} \
+          -e C_COMPILER=${{ matrix.c_compiler }} \
+          -e BUILD_TYPE=$BUILD_TYPE
+          --platform ${{ matrix.arch }} \
+          debian:unstable-slim \
+          ./qemu.sh
             
 
   build_test_on_macos:
