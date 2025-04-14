@@ -82,4 +82,4 @@ C11
 - windows(x64, arm64)
 - macos(x64, arm64)
 - freebsd@14, openbsd@7, netbsd@10(x64, arm64)
-- linux(x64, arm64, armv7, riscv64, mips)
+- linux(x64, arm64, armv6, armv7, riscv64, 386, s390x)
