@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+sudo apt update && sudo apt upgrade
+sudo apt install cmake
+
 mkdir build 
 cd build 
 cmake .. -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE 
