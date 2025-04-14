@@ -3,8 +3,19 @@ name: PR Build and Test
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - '**/CMakeLists.txt'
+      - '.github/workflows/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - '**/*.c'
+      - '**/*.h'
+      - '**/CMakeLists.txt'
+      - '.github/workflows/**'
+      - '.clang-format*'
 env:
   INSTALL_PREFIX: /usr
   BUILD_TYPE: Release
