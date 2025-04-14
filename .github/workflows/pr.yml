@@ -139,7 +139,7 @@ jobs:
           -v $(pwd):/${{ github.workspace }} \
           -w ${{ github.workspace }} \
           -e C_COMPILER=${{ matrix.c_compiler }} \
-          -e BUILD_TYPE=$BUILD_TYPE
+          -e BUILD_TYPE=$BUILD_TYPE \
           --platform ${{ matrix.arch }} \
           debian:unstable-slim \
           ./qemu.sh
