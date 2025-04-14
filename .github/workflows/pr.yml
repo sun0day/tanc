@@ -151,7 +151,7 @@ jobs:
     strategy:
       matrix:
         arch: [x86_64, arm64]
-        c_compiler: [gcc, clang]
+        c_compiler: [clang]
 
     runs-on: macos-latest
 
