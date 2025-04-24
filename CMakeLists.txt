@@ -5,9 +5,6 @@ PROJECT(TANC)
 # version
 SET(LIBRARY_VERSION 0.1.0)
 
-# lib names
-SET(LIBS sum)
-
 # local build output path
 SET(LIBRARY_OUTPUT_PATH ../../lib)
 
@@ -21,10 +18,12 @@ SET(CMAKE_C_STANDARD_REQUIRED ON)
 SET(CMAKE_C_EXTENSIONS OFF)   
 
 ADD_SUBDIRECTORY(lib/sum)
+ADD_SUBDIRECTORY(lib/list)
 
 if($ENV{TEST_RUN})
     ADD_SUBDIRECTORY(test)
 endif()
+
 
 
 

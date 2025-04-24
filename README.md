@@ -33,7 +33,7 @@ cmake .. \
 cmake --build .
 
 # Build specific shared and static libs
-# cmake --build . --target tanc_{lib} tanc_{lib}_static 
+# cmake --build . --target {lib} {lib}_static 
 
 # Install
 sudo cmake --install .  # make sure you have the right permission to access the installation path
