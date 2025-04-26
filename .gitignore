@@ -61,3 +61,6 @@ dkms.conf
 **/CMakeCache.txt
 **/Makefile
 test/test
+compile_commands.json
+
+.cache
