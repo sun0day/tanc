@@ -173,7 +173,6 @@ jobs:
       shell: bash
       run: |
         cmake --build ./build --config $BUILD_TYPE
-        ./build/lib/list/list_test
 
     - name: Test library 
       shell: bash
