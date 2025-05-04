@@ -9,17 +9,6 @@
 
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern void *malloc(size_t size);
-extern void free(void *);
-
-#ifdef __cplusplus
-}
-#endif
-
 #define TCLinkedList(Name, Type)                                          \
   struct Name##Node {                                                     \
     Type data;                                                            \
