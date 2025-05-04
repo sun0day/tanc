@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export TEST_ROOT="build/lib"
+export TEST_ROOT="./build/lib"
 
 case "$(uname -s)" in
     CYGWIN*|MINGW*|MSYS*) export TEST_BIN="/Release" TEST_SUFFIX=".exe" ;;
