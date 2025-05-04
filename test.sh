@@ -9,7 +9,6 @@ esac
 
 ./build/lib/list/Release/list_test.exe
 
-cmd /c $TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX
 
 
 "$TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX"
