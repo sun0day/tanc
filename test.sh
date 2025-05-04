@@ -9,4 +9,4 @@ esac
 
 ls $TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX
 
-$TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX
+"$TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX"
