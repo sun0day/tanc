@@ -9,7 +9,6 @@ esac
 
 pwd
 
-dumpbin /DEPENDENTS build/lib/list/Release/list_test.exe
 
 
 ./build/lib/list/Release/list_test.exe 
