@@ -1,11 +1,11 @@
 #include "utest.h"
 
+#include <assert.h>
+#include <errno.h>
 #include <list/list.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <errno.h>
 
 // run test handlers
 void _tc_ut_run(tc_ut_handler *ut_handler, size_t len) {
@@ -23,15 +23,15 @@ void _tc_ut_run(tc_ut_handler *ut_handler, size_t len) {
 // init file test result
 void _tc_ut_fs(UTState *state, char *file) {
   if (state->file == NULL || strcmp(state->file, file) != 0) {
-    if(state->file != NULL) {
+    if (state->file != NULL) {
       // output previous file test result
-      _tc_ut_out(state); 
+      _tc_ut_out(state);
     }
 
     state->file = file;
     state->passed = 1;
 
-    if(state->assert_rt) {
+    if (state->assert_rt) {
       free(state->assert_rt);
     }
     state->assert_rt = TCAssertRtList_init();
@@ -54,7 +54,7 @@ inline void _tc_assert(UTState *state, int lno, unsigned char passed) {
 
 // safely abort with error code
 void _tc_ut_abort(UTState *state, int err) {
-  if(state->assert_rt != NULL) {
+  if (state->assert_rt != NULL) {
     free(state->assert_rt);
   }
   free(state);
@@ -63,11 +63,12 @@ void _tc_ut_abort(UTState *state, int err) {
 }
 
 // output test result
-void _tc_ut_out(UTState *state) { 
-  if(state->file == NULL || state->assert_rt == NULL || state->assert_rt->size == 0) {
-    fprintf(stderr, "No test cases found!\n"); 
+void _tc_ut_out(UTState *state) {
+  if (state->file == NULL || state->assert_rt == NULL ||
+      state->assert_rt->size == 0) {
+    fprintf(stderr, "No test cases found!\n");
     _tc_ut_abort(state, EIO);
   }
 
-  fprintf(stdout, "%s %s", state->passed ? "[PASS]": "[FAIL]", state->file); 
+  fprintf(stdout, "%s %s", state->passed ? "[PASS]" : "[FAIL]", state->file);
 }
