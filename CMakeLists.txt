@@ -24,8 +24,3 @@ ADD_SUBDIRECTORY(lib/utest)
 if($ENV{TEST_RUN})
     ADD_SUBDIRECTORY(test)
 endif()
-
-
-
-
-
