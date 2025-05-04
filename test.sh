@@ -7,7 +7,13 @@ case "$(uname -s)" in
     *)          export TEST_BIN="" TEST_SUFFIX="" ;;
 esac
 
-./build/lib/list/Release/list_test.exe
+pwd
+
+dumpbin /DEPENDENTS build/lib/list/Release/list_test.exe
+
+
+./build/lib/list/Release/list_test.exe 
+
 
 
 
