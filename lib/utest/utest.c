@@ -10,6 +10,11 @@
 void _tc_ut_run(tc_ut_handler *ut_handler, size_t len) {
   UTState *state = (UTState *)malloc(sizeof(UTState));
 
+  state->file = NULL;
+  state->name = NULL;
+  state->assert_rt = NULL;
+  state->passed = 1;
+
   for (int i = 0; i < len; i++) {
     (**ut_handler)(state);
     ut_handler++;

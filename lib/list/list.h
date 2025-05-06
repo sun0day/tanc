@@ -48,7 +48,9 @@ extern void tc_list_iter_next(TCListIter *);
     _tc_list_push_back(list, (void *)ptr, _malloc);                   \
   }                                                                   \
                                                                       \
-  static inline size_t Name##_size(Name *list) { return list->size; } \
+  static inline size_t Name##_size(Name *list) {  \
+    return list == NULL ? 0 : list->size; \
+  }\
   static inline TCListIter Name##_begin(Name *list) {                 \
     return _tc_list_begin(list);                                      \
   }

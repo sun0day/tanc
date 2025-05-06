@@ -3,7 +3,13 @@
 #include <stddef.h>
 
 inline _TCListNode *_tc_list_node_new(malloc_f _malloc) {
-  return (_TCListNode *)_malloc(sizeof(_TCListNode));
+  _TCListNode *node = (_TCListNode *)_malloc(sizeof(_TCListNode));
+
+  node->data = NULL;
+  node->next = NULL;
+  node->prev = NULL;
+
+  return node;
 }
 
 _TCList *_tc_list_new(malloc_f _malloc) {
@@ -41,7 +47,7 @@ inline TCListIter _tc_list_begin(_TCList *list) {
 
 // detect whether a iterator is still valid
 inline unsigned char tc_list_iter_valid(TCListIter iter) {
-  return iter.cur != NULL & iter.cur->next != NULL & iter.cur->prev != NULL;
+  return (iter.cur != NULL) & (iter.cur->next != NULL) & (iter.cur->prev != NULL);
 }
 
 inline void *tc_list_iter_get(TCListIter iter) { return iter.cur->data; }
