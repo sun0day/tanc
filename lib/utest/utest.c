@@ -1,6 +1,5 @@
 #include "utest.h"
 
-#include <assert.h>
 #include <errno.h>
 #include <list/list.h>
 #include <stdio.h>
@@ -34,7 +33,7 @@ void _tc_ut_fs(UTState *state, char *file) {
     if (state->assert_rt) {
       free(state->assert_rt);
     }
-    state->assert_rt = TCAssertRtList_init();
+    state->assert_rt = TCAssertRtList_new();
   }
 }
 
@@ -42,14 +41,19 @@ void _tc_ut_fs(UTState *state, char *file) {
 inline void _tc_ut(UTState *state, char *name) { state->name = name; }
 
 // store assert result
-inline void _tc_assert(UTState *state, int lno, unsigned char passed) {
+inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
   state->passed &= passed;
+
   TCAssertRt rt = {
       .lno = lno,
       .name = state->name,
       .passed = passed,
   };
   TCAssertRtList_push_back(state->assert_rt, rt);
+
+  if (state->passed == 0) {
+    _tc_ut_out(state);
+  }
 }
 
 // safely abort with error code
@@ -65,10 +69,31 @@ void _tc_ut_abort(UTState *state, int err) {
 // output test result
 void _tc_ut_out(UTState *state) {
   if (state->file == NULL || state->assert_rt == NULL ||
-      state->assert_rt->size == 0) {
-    fprintf(stderr, "No test cases found!\n");
+      TCAssertRtList_size(state->assert_rt) == 0) {
+    fprintf(stderr, "No test cases or assertions found!\n");
     _tc_ut_abort(state, EIO);
   }
 
-  fprintf(stdout, "%s %s", state->passed ? "[PASS]" : "[FAIL]", state->file);
+  fprintf(stdout, "%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
+          state->file);
+
+  char *case_name = "";
+  TCListIter iter = TCAssertRtList_begin(state->assert_rt);
+
+  while (tc_list_iter_valid(iter)) {
+    TCAssertRt *assert_rt = (TCAssertRt *)tc_list_iter_get(iter);
+
+    if (case_name != assert_rt->name) {
+      fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
+              assert_rt->passed ? "✔" : "✘", assert_rt->name);
+
+      if (assert_rt->passed == 0) {
+        fprintf(stderr, "\n       Error: line %d\n", assert_rt->lno);
+        _tc_ut_abort(state, EIO);
+      }
+    }
+
+    case_name = assert_rt->name;
+    tc_list_iter_next(&iter);
+  }
 }

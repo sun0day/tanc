@@ -8,46 +8,49 @@
 #define TANC_LLIST_H
 
 #include <stddef.h>
+#include <string.h>
 
-#define TCLinkedList(Name, Type)                                          \
-  struct Name##Node {                                                     \
-    Type data;                                                            \
-    struct Name##Node *prev;                                              \
-    struct Name##Node *next;                                              \
-  };                                                                      \
-                                                                          \
-  struct Name {                                                           \
-    struct Name##Node *head;                                              \
-    struct Name##Node *tail;                                              \
-    size_t size;                                                          \
-  };                                                                      \
-                                                                          \
-  static inline struct Name##Node *Name##Node_create() {                  \
-    return (struct Name##Node *)malloc(sizeof(struct Name##Node));        \
-  }                                                                       \
-                                                                          \
-  static struct Name *Name##_init() {                                     \
-    struct Name *list = (struct Name *)malloc(sizeof(struct Name));       \
-    list->head = Name##Node_create();                                     \
-    list->tail = Name##Node_create();                                     \
-                                                                          \
-    list->head->prev = NULL;                                              \
-    list->head->next = list->tail;                                        \
-                                                                          \
-    list->tail->next = NULL;                                              \
-    list->tail->prev = list->head;                                        \
-                                                                          \
-    list->size = 0;                                                       \
-    return list;                                                          \
-  }                                                                       \
-                                                                          \
-  static struct Name##Node *Name##_push_back(struct Name *list, Type x) { \
-    struct Name##Node *node = Name##Node_create();                        \
-    node->data = x;                                                       \
-    node->prev = list->tail->prev;                                        \
-    node->prev->next = node;                                              \
-    list->tail->prev = node;                                              \
-    list->size++;                                                         \
-    return node;                                                          \
+typedef struct _TCListNode {
+  void *data;
+  struct _TCListNode *prev;
+  struct _TCListNode *next;
+} _TCListNode;
+
+typedef struct {
+  _TCListNode *head;
+  _TCListNode *tail;
+  size_t size;
+} _TCList;
+
+typedef struct TCListIterator {
+  _TCListNode *cur;
+} TCListIter;
+
+typedef void *(*malloc_f)(size_t);
+typedef void (*free_f)(void *);
+
+extern _TCListNode *_tc_list_node_new(malloc_f);
+extern _TCList *_tc_list_new(malloc_f);
+extern void _tc_list_push_back(_TCList *, void *, malloc_f);
+extern TCListIter _tc_list_begin(_TCList *);
+extern unsigned char tc_list_iter_valid(TCListIter);
+extern void *tc_list_iter_get(TCListIter);
+extern void tc_list_iter_next(TCListIter *);
+
+#define TCLinkedList(Name, Type, _malloc, _free)                      \
+  typedef _TCList Name;                                               \
+                                                                      \
+  static inline Name *Name##_new() { return _tc_list_new(_malloc); }  \
+                                                                      \
+  static inline void Name##_push_back(Name *list, Type x) {           \
+    Type *ptr = (Type *)_malloc(sizeof(Type));                        \
+    memcpy(ptr, &x, sizeof(Type));                                    \
+    _tc_list_push_back(list, (void *)ptr, _malloc);                   \
+  }                                                                   \
+                                                                      \
+  static inline size_t Name##_size(Name *list) { return list->size; } \
+  static inline TCListIter Name##_begin(Name *list) {                 \
+    return _tc_list_begin(list);                                      \
   }
+
 #endif

@@ -20,24 +20,12 @@ typedef struct TCAssertResult {
   char *name;
   unsigned char passed;
 } TCAssertRt;
-TCLinkedList(TCAssertRtList, TCAssertRt);
-
-typedef struct TCCaseResult {
-  char *title;
-  struct TCAssertRtList *assert_rt;
-} TCCaseRt;
-TCLinkedList(TCCaseRtList, TCCaseRt);
-
-typedef struct TCFileResult {
-  char *file;
-  struct TCCaseRtList *case_rt;
-} TCFileRt;
-TCLinkedList(TCFileRtList, TCFileRt);
+TCLinkedList(TCAssertRtList, TCAssertRt, malloc, free);
 
 typedef struct TCTestState {
   char *file;
   char *name;
-  struct TCAssertRtList *assert_rt;
+  TCAssertRtList *assert_rt;
   unsigned char passed;
 } UTState;
 
@@ -46,7 +34,7 @@ typedef void (*tc_ut_handler)(UTState *);
 extern void _tc_ut_run(tc_ut_handler *, size_t);
 extern void _tc_ut_fs(UTState *, char *);
 extern void _tc_ut(UTState *, char *);
-extern void _tc_assert(UTState *, int, unsigned char);
+extern void _tc_ut_assert(UTState *, int, unsigned char);
 extern void _tc_ut_out(UTState *);
 
 // run test handlers
@@ -60,7 +48,7 @@ extern void _tc_ut_out(UTState *);
 // clang-format off
 #define tc_ut_assert(expr) do { int lno = __LINE__; \
    _tc_ut_fs(ut_state, __FILE__); \
-   _tc_assert(ut_state, lno, expr); \
+   _tc_ut_assert(ut_state, lno, expr); \
   } while(0);
 
 // run test case
