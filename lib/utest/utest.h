@@ -20,7 +20,7 @@ typedef struct TCAssertResult {
   char *name;
   unsigned char passed;
 } TCAssertRt;
-TCLinkedList(TCAssertRtList, TCAssertRt, malloc, free);
+TCLinkedList(TCAssertRtList, TCAssertRt );
 
 typedef struct TCTestState {
   char *file;

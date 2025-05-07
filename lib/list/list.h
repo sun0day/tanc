@@ -37,15 +37,34 @@ extern unsigned char tc_list_iter_valid(TCListIter);
 extern void *tc_list_iter_get(TCListIter);
 extern void tc_list_iter_next(TCListIter *);
 
-#define TCLinkedList(Name, Type, _malloc, _free)                      \
+#ifndef TC_ALLOCATOR
+#define TC_ALLOCATOR malloc, free
+#endif
+
+#define _GET_ALLOC(...) __GET_ALLOC(__VA_ARGS__)
+#define __GET_ALLOC(_malloc, _free) _malloc
+
+#define _GET_FREE(...) __GET_FREE(__VA_ARGS__)
+#define __GET_FREE(_malloc, _free) _free
+
+#ifndef _TC_LIST_ALLOC
+#define _TC_LIST_ALLOC _GET_ALLOC(TC_ALLOCATOR)
+#endif
+
+#ifndef _TC_LIST_FREE
+#define _TC_LIST_FREE _GET_FREE(TC_ALLOCATOR)
+#endif
+
+
+#define TCLinkedList(Name, Type)                      \
   typedef _TCList Name;                                               \
                                                                       \
-  static inline Name *Name##_new() { return _tc_list_new(_malloc); }  \
+  static inline Name *Name##_new() { return _tc_list_new(_TC_LIST_ALLOC); }  \
                                                                       \
   static inline void Name##_push_back(Name *list, Type x) {           \
-    Type *ptr = (Type *)_malloc(sizeof(Type));                        \
+    Type *ptr = (Type *)_TC_LIST_ALLOC(sizeof(Type));                        \
     memcpy(ptr, &x, sizeof(Type));                                    \
-    _tc_list_push_back(list, (void *)ptr, _malloc);                   \
+    _tc_list_push_back(list, (void *)ptr, _TC_LIST_ALLOC);                   \
   }                                                                   \
                                                                       \
   static inline size_t Name##_size(Name *list) {  \
