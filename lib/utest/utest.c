@@ -74,7 +74,7 @@ void _tc_ut_abort(UTState *state, int err) {
 // output test result
 void _tc_ut_out(UTState *state) {
   if (state->file == NULL || state->assert_rt == NULL ||
-      TCAssertRtList_size(state->assert_rt) == 0) {
+      TCAssertRtList_empty(state->assert_rt) == 1) {
     fprintf(stderr, "No test cases or assertions found!\n");
     _tc_ut_abort(state, EIO);
   }
@@ -86,19 +86,19 @@ void _tc_ut_out(UTState *state) {
   TCListIter iter = TCAssertRtList_begin(state->assert_rt);
 
   while (tc_list_iter_valid(iter)) {
-    TCAssertRt *assert_rt = (TCAssertRt *)tc_list_iter_get(iter);
+    TCAssertRt assert_rt = TCAssertRtList_get(iter);
 
-    if (case_name != assert_rt->name) {
-      fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
-              assert_rt->passed ? "✔" : "✘", assert_rt->name);
+    if (case_name != assert_rt.name) {
+      fprintf(assert_rt.passed ? stdout : stderr, "       %s %s\n",
+              assert_rt.passed ? "✔" : "✘", assert_rt.name);
 
-      if (assert_rt->passed == 0) {
-        fprintf(stderr, "\n       Error: line %d\n", assert_rt->lno);
+      if (assert_rt.passed == 0) {
+        fprintf(stderr, "\n       Error: line %d\n", assert_rt.lno);
         _tc_ut_abort(state, EIO);
       }
     }
 
-    case_name = assert_rt->name;
-    tc_list_iter_next(&iter);
+    case_name = assert_rt.name;
+    iter = tc_list_iter_next(iter);
   }
 }
