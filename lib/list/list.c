@@ -11,6 +11,10 @@ inline TCListIter tc_list_iter_next(TCListIter iter) {
   return iter == NULL ? NULL : iter->next;
 }
 
+inline TCListIter tc_list_iter_prev(TCListIter iter) {
+  return iter == NULL ? NULL : iter->prev;
+}
+
 #ifdef TANC_UT_RUN
 
 #include <utest/utest.h>

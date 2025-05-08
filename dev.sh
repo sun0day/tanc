@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-alias tcconfig="echo '\n-------> Configure cmake <-------\n' && mkdir build 2>/dev/null || true && cd build && cmake .. && cd .."
+alias tcconfig="echo '\n-------> Configure cmake <-------\n' && mkdir build 2>/dev/null || true && cd build && cmake .. || true && cd .."
 alias tcbuild="tcconfig && echo '\n-------> Build libs <-------\n' && cmake --build build"
 alias tctest="export TEST_RUN=1 && tcbuild && echo '\n-------> Run tests <-------\n' && ./test.sh"
 alias tcinstall="sudo cmake --install build"

@@ -63,9 +63,8 @@ inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
 
 // safely abort with error code
 void _tc_ut_abort(UTState *state, int err) {
-  if (state->assert_rt != NULL) {
-    free(state->assert_rt);
-  }
+  TCAssertRtList_free(state->assert_rt);
+
   free(state);
 
   exit(err);
@@ -83,9 +82,9 @@ void _tc_ut_out(UTState *state) {
           state->file);
 
   char *case_name = "";
-  TCListIter iter = TCAssertRtList_begin(state->assert_rt);
 
-  while (tc_list_iter_valid(iter)) {
+  tc_list_each(state->assert_rt, TCAssertRtList_begin(state->assert_rt),
+               TCAssertRtList_end(state->assert_rt), iter) {
     TCAssertRt assert_rt = TCAssertRtList_get(iter);
 
     if (case_name != assert_rt.name) {
@@ -93,12 +92,11 @@ void _tc_ut_out(UTState *state) {
               assert_rt.passed ? "✔" : "✘", assert_rt.name);
 
       if (assert_rt.passed == 0) {
-        fprintf(stderr, "\n       Error: line %d\n", assert_rt.lno);
+        fprintf(stderr, "\n         Error: line %d\n", assert_rt.lno);
         _tc_ut_abort(state, EIO);
       }
     }
 
     case_name = assert_rt.name;
-    iter = tc_list_iter_next(iter);
   }
 }
