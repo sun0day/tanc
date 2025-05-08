@@ -54,7 +54,7 @@ inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
       .name = state->name,
       .passed = passed,
   };
-  TCAssertRtList_push_back(state->assert_rt, rt);
+  TCAssertRtList_push(state->assert_rt, rt);
 
   if (state->passed == 0) {
     _tc_ut_out(state);
@@ -83,9 +83,8 @@ void _tc_ut_out(UTState *state) {
 
   char *case_name = "";
 
-  tc_list_each(state->assert_rt, TCAssertRtList_begin(state->assert_rt),
-               TCAssertRtList_end(state->assert_rt), iter) {
-    TCAssertRt assert_rt = TCAssertRtList_get(iter);
+  tc_list_each(TCAssertRtList_begin(state->assert_rt), iter) {
+    TCAssertRt assert_rt = TCAssertRtList_at(iter);
 
     if (case_name != assert_rt.name) {
       fprintf(assert_rt.passed ? stdout : stderr, "       %s %s\n",

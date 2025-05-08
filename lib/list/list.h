@@ -54,18 +54,38 @@ extern TCListIter tc_list_iter_prev(TCListIter);
   ((type *)((char *)(ptr) - offsetof(type, prop)))
 
 /*
- * iterate over list elements until
+ * Match 1 - 5 variadic arguments
+ */
+#define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
+
+/*
+ * Iterate over list elements until
  * iterator reaches the bound or becomes invalid
  */
-#define tc_list_each(list, start, end, cur)                            \
+#define tc_list_each(...) \
+  tc_args_of(_1, _2, __VA_ARGS__, _tc_list_sli_each, _tc_list_each)(__VA_ARGS__)
+
+#define _tc_list_each(start, cur)                       \
+  for (TCListIter cur = start; tc_list_iter_valid(cur); \
+       cur = tc_list_iter_next(cur))
+
+#define _tc_list_sli_each(start, end, cur)                             \
   for (TCListIter cur = start; (cur != end) & tc_list_iter_valid(cur); \
        cur = tc_list_iter_next(cur))
 
 /*
- * iterate over list elements in the reverse order until
+ * Iterate over list elements in the reverse order until
  * iterator reaches the bound or becomes invalid
  */
-#define tc_list_reach(list, start, end, cur)                           \
+
+#define tc_list_reach(...) \
+  tc_args_of(__VA_ARGS__, _tc_list_sli_reach, _tc_list_reach)(__VA_ARGS__)
+
+#define _tc_list_reach(start, cur)                      \
+  for (TCListIter cur = start; tc_list_iter_valid(cur); \
+       cur = tc_list_iter_prev(cur))
+
+#define _tc_list_sli_reach(start, end, cur)                            \
   for (TCListIter cur = start; (cur != end) & tc_list_iter_valid(cur); \
        cur = tc_list_iter_prev(cur))
 
@@ -78,7 +98,7 @@ extern TCListIter tc_list_iter_prev(TCListIter);
   /* clang-format off */                                   \
   TCListWrap(Name, Name##Node, pos)               \
                                                            \
-  static void Name##_push_back(Name *list, Type x) { \
+  static void Name##_push(Name *list, Type x) { \
     /* clang-format on */                                    \
     Name##Node *node = Name##Node_new();                     \
     node->data = x;                                          \
@@ -89,7 +109,7 @@ extern TCListIter tc_list_iter_prev(TCListIter);
     list->tail->pos.prev = &node->pos;                       \
   }                                                          \
                                                              \
-  static inline Type Name##_get(TCListIter iter) {           \
+  static inline Type Name##_at(TCListIter iter) {            \
     return (tc_container_of(iter, Name##Node, pos))->data;   \
   }
 
@@ -97,7 +117,7 @@ extern TCListIter tc_list_iter_prev(TCListIter);
   /* clang-format off */                                   \
   TCListWrap(Name, Node, Prop) \
                                                              \
-  static inline Node *Name##_get(TCListIter iter) { \
+  static inline Node *Name##_at(TCListIter iter) { \
     /* clang-format on */                                    \
     return tc_container_of(iter, Node, Prop);                \
   }
@@ -145,7 +165,7 @@ extern TCListIter tc_list_iter_prev(TCListIter);
       return;                                                                  \
     }                                                                          \
                                                                                \
-    tc_list_each(list, Name##_begin(list), Name##_end(list), iter) {           \
+    tc_list_each(Name##_begin(list), iter) {                                   \
       Node *node = tc_container_of(tc_list_iter_prev(iter), Node, Prop);       \
       if (node != NULL) _tc_list_free(node);                                   \
     }                                                                          \
