@@ -41,58 +41,76 @@ extern TCListIter tc_list_iter_next(TCListIter);
 #define _tc_list_free _tc_get_free(tc_allocator)
 #endif
 
-#define container_of(ptr, type, member) \
-  ((type *)((char *)(ptr) - offsetof(type, member)))
+/*
+ * Get the parent object pointer from its property,
+ * it's type-unsafe!
+ */
+#define tc_container_of(ptr, type, prop) \
+  ((type *)((char *)(ptr) - offsetof(type, prop)))
 
-#define TCLinkedList(Name, Type)                                         \
-  typedef struct {                                                       \
-    Type data;                                                           \
-    _TCListNode pos;                                                     \
-  } Name##Node;                                                          \
-                                                                         \
-  typedef struct {                                                       \
-    Name##Node *head;                                                    \
-    Name##Node *tail;                                                    \
-  } Name;                                                                \
-                                                                         \
-  static inline Name##Node *Name##Node_new() {                           \
-    Name##Node *node = (Name##Node *)_tc_list_alloc(sizeof(Name##Node)); \
-    node->pos = (_TCListNode){.prev = NULL, .next = NULL};               \
-    return node;                                                         \
-  }                                                                      \
-                                                                         \
-  static Name *Name##_new() {                                            \
-    Name *list = (Name *)_tc_list_alloc(sizeof(Name));                   \
-                                                                         \
-    list->head = Name##Node_new();                                       \
-    list->tail = Name##Node_new();                                       \
-                                                                         \
-    list->head->pos.next = &list->tail->pos;                             \
-    list->tail->pos.prev = &list->head->pos;                             \
-                                                                         \
-    return list;                                                         \
-  }                                                                      \
-                                                                         \
-  static void Name##_push_back(Name *list, Type x) {                     \
-    Name##Node *node = Name##Node_new();                                 \
-    node->data = x;                                                      \
-                                                                         \
-    node->pos.prev = list->tail->pos.prev;                               \
-    node->pos.prev->next = &node->pos;                                   \
-    node->pos.next = &list->tail->pos;                                   \
-    list->tail->pos.prev = &node->pos;                                   \
-  }                                                                      \
-                                                                         \
-  static inline unsigned char Name##_empty(Name *list) {                 \
-    return list == NULL | list->head->pos.next == &list->tail->pos;      \
-  }                                                                      \
-                                                                         \
-  static inline TCListIter Name##_begin(Name *list) {                    \
-    return list == NULL ? NULL : list->head->pos.next;                   \
-  }                                                                      \
-                                                                         \
-  static inline Type Name##_get(TCListIter iter) {                       \
-    return (container_of(iter, Name##Node, pos))->data;                  \
+#define TCLinkedList(Name, Type)                             \
+  typedef struct {                                           \
+    Type data;                                               \
+    _TCListNode pos;                                         \
+  } Name##Node;                                              \
+                                                             \
+  /* clang-format off */                                   \
+  TCListWrap(Name, Name##Node, pos)               \
+                                                           \
+  static void Name##_push_back(Name *list, Type x) { \
+    /* clang-format on */                                    \
+    Name##Node *node = Name##Node_new();                     \
+    node->data = x;                                          \
+                                                             \
+    node->pos.prev = list->tail->pos.prev;                   \
+    node->pos.prev->next = &node->pos;                       \
+    node->pos.next = &list->tail->pos;                       \
+    list->tail->pos.prev = &node->pos;                       \
+  }                                                          \
+                                                             \
+  static inline Type Name##_get(TCListIter iter) {           \
+    return (tc_container_of(iter, Name##Node, pos))->data;      \
+  }
+
+#define TCInsvList(Name, Node, Prop)                         \
+  /* clang-format off */                                   \
+  TCListWrap(Name, Node, Prop) \
+                                                             \
+  static inline Node *Name##_get(TCListIter iter) { \
+    /* clang-format on */                                    \
+    return tc_container_of(iter, Node, Prop);                   \
+  }
+
+#define TCListWrap(Name, Node, Prop)                         \
+  typedef struct {                                                    \
+    Node *head;                                                       \
+    Node *tail;                                                       \
+  } Name;                                                             \
+                                                                      \
+  static inline Node *Node##_new() {                                  \
+    Node *node = (Node *)_tc_list_alloc(sizeof(Node));                \
+    node->Prop = (_TCListNode){.prev = NULL, .next = NULL};           \
+    return node;                                                      \
+  }                                                                   \
+                                                                      \
+  static Name *Name##_new() {                                         \
+    Name *list = (Name *)_tc_list_alloc(sizeof(Name));                \
+                                                                      \
+    list->head = Node##_new();                                        \
+    list->tail = Node##_new();                                        \
+                                                                      \
+    list->head->Prop.next = &list->tail->Prop;                        \
+    list->tail->Prop.prev = &list->head->Prop;                        \
+                                                                      \
+    return list;                                                      \
+  }                                                                   \
+                                                                      \
+  static inline unsigned char Name##_empty(Name *list) {              \
+    return list == NULL | list->head->Prop.next == &list->tail->Prop; \
+  }                                                                   \
+                                                                      \
+  static inline TCListIter Name##_begin(Name *list) {                 \
+    return list == NULL ? NULL : list->head->Prop.next;               \
   }
 
 #endif
