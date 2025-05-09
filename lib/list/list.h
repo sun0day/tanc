@@ -89,40 +89,10 @@ extern TCListIter tc_list_iter_prev(TCListIter);
   for (TCListIter cur = start; (cur != end) & tc_list_iter_valid(cur); \
        cur = tc_list_iter_prev(cur))
 
-#define TCLinkedList(Name, Type)                             \
-  typedef struct {                                           \
-    Type data;                                               \
-    TCListNode pos;                                          \
-  } Name##Node;                                              \
-                                                             \
-  /* clang-format off */                                   \
-  TCListWrap(Name, Name##Node, pos)               \
-                                                           \
-  static void Name##_push(Name *list, Type x) { \
-    /* clang-format on */                                    \
-    Name##Node *node = Name##Node_new();                     \
-    node->data = x;                                          \
-                                                             \
-    node->pos.prev = list->tail->pos.prev;                   \
-    node->pos.prev->next = &node->pos;                       \
-    node->pos.next = &list->tail->pos;                       \
-    list->tail->pos.prev = &node->pos;                       \
-  }                                                          \
-                                                             \
-  static inline Type Name##_at(TCListIter iter) {            \
-    return (tc_container_of(iter, Name##Node, pos))->data;   \
-  }
-
-#define TCInsvList(Name, Node, Prop)                         \
-  /* clang-format off */                                   \
-  TCListWrap(Name, Node, Prop) \
-                                                             \
-  static inline Node *Name##_at(TCListIter iter) { \
-    /* clang-format on */                                    \
-    return tc_container_of(iter, Node, Prop);                \
-  }
-
-#define TCListWrap(Name, Node, Prop)                                           \
+/*
+ * Generate double linked list bases
+ */
+#define _TCListWrap(Name, Node, Prop)                                          \
   typedef struct {                                                             \
     Node *head;                                                                \
     Node *tail;                                                                \
@@ -146,6 +116,18 @@ extern TCListIter tc_list_iter_prev(TCListIter);
     return list;                                                               \
   }                                                                            \
                                                                                \
+  static TCListIter _##Name##_insert(TCListIter iter, Node *node) {            \
+    node->Prop.next = iter;                                                    \
+    node->Prop.prev = iter->prev;                                              \
+                                                                               \
+    if (iter->prev) {                                                          \
+      iter->prev->next = &node->Prop;                                          \
+    }                                                                          \
+                                                                               \
+    iter->prev = &node->Prop;                                                  \
+    return &node->Prop;                                                        \
+  }                                                                            \
+                                                                               \
   static inline unsigned char Name##_empty(Name *list) {                       \
     return list == NULL | list->head->Prop.next == &list->tail->Prop;          \
   }                                                                            \
@@ -160,7 +142,7 @@ extern TCListIter tc_list_iter_prev(TCListIter);
                                                                                \
   static inline void Name##_free_iter(TCListIter iter) {}                      \
                                                                                \
-  static inline void Name##_free(Name *list) {                                 \
+  static void Name##_free(Name *list) {                                        \
     if (list == NULL) {                                                        \
       return;                                                                  \
     }                                                                          \
@@ -173,6 +155,61 @@ extern TCListIter tc_list_iter_prev(TCListIter);
     _tc_list_free(list->tail);                                                 \
                                                                                \
     _tc_list_free(list);                                                       \
+  }
+
+/*
+ * Double linked list
+ */
+#define TCLinkedList(Name, Type)                               \
+  typedef struct {                                             \
+    Type data;                                                 \
+    TCListNode pos;                                            \
+  } Name##Node;                                                \
+                                                               \
+  /* clang-format off */                                     \
+  _TCListWrap(Name, Name##Node, pos)                         \
+                                                             \
+  static inline TCListIter Name##_insert(TCListIter iter, Type x) { \
+    /* clang-format on */                                      \
+    Name##Node *node = Name##Node_new();                       \
+    node->data = x;                                            \
+    return _##Name##_insert(iter, node);                       \
+  }                                                            \
+                                                               \
+  static inline void Name##_push(Name *list, Type x) {         \
+    Name##_insert(&list->tail->pos, x);                        \
+  }                                                            \
+                                                               \
+  static inline void Name##_unshift(Name *list, Type x) {      \
+    Name##_insert(list->head->pos.next, x);                    \
+  }                                                            \
+                                                               \
+  static inline Type Name##_at(TCListIter iter) {              \
+    return (tc_container_of(iter, Name##Node, pos))->data;     \
+  }
+
+/*
+ * Instrusive double linked list
+ */
+#define TCInsvList(Name, Node, Prop)                          \
+  /* clang-format off */                                   \
+  _TCListWrap(Name, Node, Prop)                            \
+                                                           \
+  static inline TCListIter Name##_insert(TCListIter iter, Node *node) {  \
+    /* clang-format on */                                     \
+    return _##Name##_insert(iter, node);                      \
+  }                                                           \
+                                                              \
+  static inline void Name##_push(Name *list, Node *node) {    \
+    Name##_insert(&list->tail->Prop, node);                   \
+  }                                                           \
+                                                              \
+  static inline void Name##_unshift(Name *list, Node *node) { \
+    Name##_insert(list->head->Prop.next, node);               \
+  }                                                           \
+                                                              \
+  static inline Node *Name##_at(TCListIter iter) {            \
+    return tc_container_of(iter, Node, Prop);                 \
   }
 
 #endif
