@@ -33,10 +33,13 @@ cmake .. \
 cmake --build .
 
 # Build specific shared and static libs
-# cmake --build . --target tanc_{lib} tanc_{lib}_static 
+# cmake --build . --target {lib} {lib}_static 
 
 # Install
 sudo cmake --install .  # make sure you have the right permission to access the installation path
+
+# Install specific lib files
+# sudo cmake --install . --component {lib}
 ```
 
 After installation, the header files are in the `/usr/include/tanc` while the static and dynamic libraries are in the `/usr/lib/tanc`.
