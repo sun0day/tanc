@@ -81,21 +81,18 @@ void _tc_ut_out(UTState *state) {
   fprintf(stdout, "%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
           state->file);
 
-  char *case_name = "";
+  tc_list_each(tc_list_begin(state->assert_rt), iter) {
+    TCAssertRt *assert_rt = TCAssertRtList_at(iter);
+    TCAssertRt *next_assert_rt = TCAssertRtList_at(tc_list_next(iter));
 
-  tc_list_each(TCAssertRtList_begin(state->assert_rt), iter) {
-    TCAssertRt assert_rt = TCAssertRtList_at(iter);
+    if (!next_assert_rt || assert_rt->name != next_assert_rt->name) {
+      fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
+              assert_rt->passed ? "✔" : "✘", assert_rt->name);
 
-    if (case_name != assert_rt.name) {
-      fprintf(assert_rt.passed ? stdout : stderr, "       %s %s\n",
-              assert_rt.passed ? "✔" : "✘", assert_rt.name);
-
-      if (assert_rt.passed == 0) {
-        fprintf(stderr, "\n         Error: line %d\n", assert_rt.lno);
+      if (assert_rt->passed == 0) {
+        fprintf(stderr, "\n         Error: line %d\n", assert_rt->lno);
         _tc_ut_abort(state, EIO);
       }
     }
-
-    case_name = assert_rt.name;
   }
 }

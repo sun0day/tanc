@@ -7,8 +7,8 @@
 #ifndef TANC_UTEST_H
 #define TANC_UTEST_H
 
-#ifndef TANC_UT_RUN
-#define TANC_UT_RUN
+#ifndef TANC_UT_ON
+#define TANC_UT_ON
 #endif
 
 #include <list/list.h>
