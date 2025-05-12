@@ -85,7 +85,7 @@ void list_test(UTState *ut_state) {
 
     InsvObj *insv_obj = InsvObj_new();
     insv_obj->v = 3;
-    iter = tc_list_next(tc_list_begin(list3, x));
+    iter = tc_list_next(tc_list_begin(list3));
     iter = InsvObjs_insert(iter, insv_obj);
     tc_ut_assert(InsvObjs_at(iter)->v == 3);
   });
@@ -109,8 +109,8 @@ void list_test(UTState *ut_state) {
     }
 
     i = 0;
-    begin = tc_list_begin(list3, x);
-    end = tc_list_end(list3, x);
+    begin = tc_list_begin(list3);
+    end = tc_list_end(list3);
 
     tc_list_each(begin, end, cur) {
       tc_ut_assert(InsvObjs_at(cur)->v == expected[i++]);
@@ -136,8 +136,8 @@ void list_test(UTState *ut_state) {
     }
 
     i = 2;
-    begin = tc_list_rbegin(list3, x);
-    end = tc_list_rend(list3, x);
+    begin = tc_list_rbegin(list3);
+    end = tc_list_rend(list3);
 
     tc_list_reach(begin, end, cur) {
       tc_ut_assert(InsvObjs_at(cur)->v == expected[i--]);

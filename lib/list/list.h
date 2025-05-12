@@ -58,33 +58,15 @@ extern TCListIter tc_list_prev(TCListIter);
 #define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
 
 /*
- * Get the head node's iterator
+ * Get the sentinel node's iterator
  */
-#define tc_list_rend(...)                                 \
-  tc_args_of(_1, _2, _3, __VA_ARGS__, _tc_list_rend_prop, \
-             _tc_list_rend)(__VA_ARGS__)
-
-#define _tc_list_rend(list) _tc_list_rend_prop(list, pos)
-
-#define _tc_list_rend_prop(list, Prop) \
-  ((list == NULL | list->head == NULL) ? NULL : (&list->head->Prop))
+#define tc_list_rend tc_list_end
+#define tc_list_end(list) (list == NULL  ? NULL : &list->_st)
 
 /*
  * Get the first node's iterator
  */
-#define tc_list_begin(...) tc_list_next(tc_list_rend(__VA_ARGS__))
-
-/*
- * Get the tail node's iterator
- */
-#define tc_list_end(...)                                 \
-  tc_args_of(_1, _2, _3, __VA_ARGS__, _tc_list_end_prop, \
-             _tc_list_end)(__VA_ARGS__)
-
-#define _tc_list_end(list) _tc_list_end_prop(list, pos)
-
-#define _tc_list_end_prop(list, Prop) \
-  ((list == NULL | list->tail == NULL) ? NULL : &list->tail->Prop)
+#define tc_list_begin(...) tc_list_next(tc_list_end(__VA_ARGS__))
 
 /*
  * Get the last node's iterator
@@ -111,8 +93,7 @@ extern TCListIter tc_list_prev(TCListIter);
  */
 #define _TCListWrap(Name, Node, Prop)                                        \
   typedef struct {                                                           \
-    Node *head;                                                              \
-    Node *tail;                                                              \
+    TCListNode _st;                                                              \
   } Name;                                                                    \
                                                                              \
   static inline Node *Node##_new() {                                         \
@@ -124,11 +105,7 @@ extern TCListIter tc_list_prev(TCListIter);
   static Name *Name##_new() {                                                \
     Name *list = (Name *)_tc_list_alloc(sizeof(Name));                       \
                                                                              \
-    list->head = Node##_new();                                               \
-    list->tail = Node##_new();                                               \
-                                                                             \
-    list->head->Prop.next = &list->tail->Prop;                               \
-    list->tail->Prop.prev = &list->head->Prop;                               \
+    list->_st = (TCListNode){ .prev = &(list->_st), .next = &(list->_st)};                                               \
                                                                              \
     return list;                                                             \
   }                                                                          \
@@ -146,7 +123,7 @@ extern TCListIter tc_list_prev(TCListIter);
   }                                                                          \
                                                                              \
   static inline unsigned char Name##_empty(Name *list) {                     \
-    return list == NULL || list->head->Prop.next == &list->tail->Prop;       \
+    return list == NULL || (list->_st.next == list->_st.prev && list->_st.next == &list->_st);     \
   }                                                                          \
                                                                              \
   static void Name##_clear(Name *list) {                                     \
@@ -154,13 +131,13 @@ extern TCListIter tc_list_prev(TCListIter);
       return;                                                                \
     }                                                                        \
                                                                              \
-    tc_list_each(tc_list_begin(list, Prop), tc_list_end(list, Prop), iter) { \
+    tc_list_each(tc_list_begin(list), tc_list_end(list), iter) { \
       Node *node = tc_container_of(iter, Node, Prop);                        \
       if (node != NULL) _tc_list_free(node);                                 \
     }                                                                        \
-                                                                             \
-    list->head->Prop.next = &list->tail->Prop;                               \
-    list->tail->Prop.prev = &list->head->Prop;                               \
+      \
+    list->_st.prev = &list->_st;\
+    list->_st.next = &list->_st;\
   }                                                                          \
                                                                              \
   static void Name##_free(Name *list) {                                      \
@@ -170,8 +147,6 @@ extern TCListIter tc_list_prev(TCListIter);
                                                                              \
     Name##_clear(list);                                                      \
                                                                              \
-    _tc_list_free(list->head);                                               \
-    _tc_list_free(list->tail);                                               \
     _tc_list_free(list);                                                     \
   }
 
@@ -200,19 +175,19 @@ extern TCListIter tc_list_prev(TCListIter);
   }                                                                          \
                                                                              \
   static inline Type *Name##_front(Name *list) {                             \
-    return Name##_at(list->head->pos.next);                                  \
+    return Name##_at(list->_st.next);                                  \
   }                                                                          \
                                                                              \
   static inline Type *Name##_back(Name *list) {                              \
-    return Name##_at(list->tail->pos.prev);                                  \
+    return Name##_at(list->_st.prev);                                  \
   }                                                                          \
                                                                              \
   static inline void Name##_push(Name *list, Type x) {                       \
-    Name##_insert(&list->tail->pos, x);                                      \
+    Name##_insert(&list->_st, x);                                      \
   }                                                                          \
                                                                              \
   static inline void Name##_unshift(Name *list, Type x) {                    \
-    Name##_insert(list->head->pos.next, x);                                  \
+    Name##_insert(list->_st.next, x);                                  \
   }
 
 /*
@@ -228,11 +203,11 @@ extern TCListIter tc_list_prev(TCListIter);
   }                                                                     \
                                                                         \
   static inline Node *Name##_front(Name *list) {                        \
-    return Name##_at(list->head->Prop.next);                            \
+    return Name##_at(list->_st.next);                            \
   }                                                                     \
                                                                         \
   static inline Node *Name##_back(Name *list) {                         \
-    return Name##_at(list->tail->Prop.prev);                            \
+    return Name##_at(list->_st.prev);                            \
   }                                                                     \
                                                                         \
   static inline TCListIter Name##_insert(TCListIter iter, Node *node) { \
@@ -240,11 +215,11 @@ extern TCListIter tc_list_prev(TCListIter);
   }                                                                     \
                                                                         \
   static inline void Name##_push(Name *list, Node *node) {              \
-    Name##_insert(&list->tail->Prop, node);                             \
+    Name##_insert(&list->_st, node);                             \
   }                                                                     \
                                                                         \
   static inline void Name##_unshift(Name *list, Node *node) {           \
-    Name##_insert(list->head->Prop.next, node);                         \
+    Name##_insert(list->_st.next, node);                         \
   }
 
 #endif
