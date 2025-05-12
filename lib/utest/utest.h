@@ -52,11 +52,11 @@ extern void _tc_ut_out(UTState *);
   } while(0);
 
 // run test case
-#define tc_ut(name, block)        \
+#define tc_ut(name, ...)        \
   do {                             \
     _tc_ut_fs(ut_state, __FILE__); \
     _tc_ut(ut_state, name);       \
-    block                          \
+    __VA_ARGS__                          \
   } while (0);
 
 #endif

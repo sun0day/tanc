@@ -81,7 +81,8 @@ void _tc_ut_out(UTState *state) {
   fprintf(stdout, "%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
           state->file);
 
-  tc_list_each(tc_list_begin(state->assert_rt), iter) {
+  tc_list_each(tc_list_begin(state->assert_rt), tc_list_end(state->assert_rt),
+               iter) {
     TCAssertRt *assert_rt = TCAssertRtList_at(iter);
     TCAssertRt *next_assert_rt = TCAssertRtList_at(tc_list_next(iter));
 
