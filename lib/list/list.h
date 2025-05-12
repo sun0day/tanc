@@ -146,7 +146,21 @@ extern TCListIter tc_list_prev(TCListIter);
   }                                                                          \
                                                                              \
   static inline unsigned char Name##_empty(Name *list) {                     \
-    return list == NULL | list->head->Prop.next == &list->tail->Prop;        \
+    return list == NULL || list->head->Prop.next == &list->tail->Prop;       \
+  }                                                                          \
+                                                                             \
+  static void Name##_clear(Name *list) {                                     \
+    if (list == NULL) {                                                      \
+      return;                                                                \
+    }                                                                        \
+                                                                             \
+    tc_list_each(tc_list_begin(list, Prop), tc_list_end(list, Prop), iter) { \
+      Node *node = tc_container_of(iter, Node, Prop);                        \
+      if (node != NULL) _tc_list_free(node);                                 \
+    }                                                                        \
+                                                                             \
+    list->head->Prop.next = &list->tail->Prop;                               \
+    list->tail->Prop.prev = &list->head->Prop;                               \
   }                                                                          \
                                                                              \
   static void Name##_free(Name *list) {                                      \
@@ -154,11 +168,9 @@ extern TCListIter tc_list_prev(TCListIter);
       return;                                                                \
     }                                                                        \
                                                                              \
-    tc_list_each(tc_list_begin(list, Prop), tc_list_end(list, Prop), iter) { \
-      Node *node = tc_container_of(tc_list_prev(iter), Node, Prop);          \
-      if (node != NULL) _tc_list_free(node);                                 \
-    }                                                                        \
+    Name##_clear(list);                                                      \
                                                                              \
+    _tc_list_free(list->head);                                               \
     _tc_list_free(list->tail);                                               \
     _tc_list_free(list);                                                     \
   }

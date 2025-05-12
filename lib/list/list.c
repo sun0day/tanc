@@ -143,6 +143,31 @@ void list_test(UTState *ut_state) {
       tc_ut_assert(InsvObjs_at(cur)->v == expected[i--]);
     }
   });
+
+  tc_ut("clear list", {
+    IntList_clear(list1);
+    tc_ut_assert(IntList_empty(list1));
+
+    ObjList_clear(list2);
+    tc_ut_assert(ObjList_empty(list2));
+
+    InsvObjs_clear(list3);
+    tc_ut_assert(InsvObjs_empty(list3));
+  });
+
+  tc_ut("free list", {
+    IntList_free(list1);
+    list1 = NULL;
+    tc_ut_assert(IntList_empty(list1));
+
+    ObjList_free(list2);
+    list2 = NULL;
+    tc_ut_assert(ObjList_empty(list2));
+
+    InsvObjs_free(list3);
+    list3 = NULL;
+    tc_ut_assert(InsvObjs_empty(list3));
+  });
 }
 
 int main() {
