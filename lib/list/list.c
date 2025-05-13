@@ -3,9 +3,10 @@
 #include <stddef.h>
 
 inline TCList *_tc_list_new(malloc_f _malloc) {
-  TCList *list = (TCList *)_malloc(sizeof(TCList *));
+  TCList *list = (TCList *)_malloc(sizeof(TCList));
 
-  list->_st = (TCListPos){.prev = &(list->_st), .next = &(list->_st)};
+  list->_st.prev = &list->_st;
+  list->_st.next = &list->_st;
 
   return list;
 }
