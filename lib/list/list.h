@@ -132,9 +132,10 @@ extern TCListIter tc_list_prev(TCListIter);
       return;                                                                  \
     }                                                                          \
                                                                                \
-    tc_list_each(tc_list_begin(list), tc_list_end(list), iter) {               \
-      Node *node = tc_container_of(iter, Node, Prop);                          \
-      if (node != NULL) _tc_list_free(node);                                   \
+    TCListIter start = tc_list_next(tc_list_begin(list));                      \
+    tc_list_each(start, tc_list_end(list), iter) {                             \
+      Node *node = tc_container_of(tc_list_prev(iter), Node, Prop);            \
+      _tc_list_free(node);                                                     \
     }                                                                          \
                                                                                \
     list->_st.prev = &list->_st;                                               \
