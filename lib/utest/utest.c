@@ -38,7 +38,7 @@ void _tc_ut_fs(UTState *state, char *file) {
     if (state->assert_rt) {
       free(state->assert_rt);
     }
-    state->assert_rt = TCAssertRtList_new();
+    state->assert_rt = tc_list_new();
   }
 }
 
@@ -73,7 +73,7 @@ void _tc_ut_abort(UTState *state, int err) {
 // output test result
 void _tc_ut_out(UTState *state) {
   if (state->file == NULL || state->assert_rt == NULL ||
-      TCAssertRtList_empty(state->assert_rt) == 1) {
+      tc_list_empty(state->assert_rt) == 1) {
     fprintf(stderr, "No test cases or assertions found!\n");
     _tc_ut_abort(state, EIO);
   }
