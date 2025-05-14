@@ -42,7 +42,7 @@ inline TCListIter tc_list_prev(TCListIter iter) {
 
 #ifdef TANC_UT_ON
 
-#include <utest/utest.h>
+#include "utest.h"
 
 typedef struct {
   int v;

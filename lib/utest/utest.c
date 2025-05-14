@@ -1,10 +1,11 @@
 #include "utest.h"
 
 #include <errno.h>
-#include <list/list.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "list.h"
 
 // run test handlers
 void _tc_ut_run(tc_ut_handler *ut_handler, size_t len) {

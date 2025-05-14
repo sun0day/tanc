@@ -11,9 +11,10 @@
 #define TANC_UT_ON
 #endif
 
-#include <list/list.h>
 #include <stddef.h>
 #include <stdlib.h>
+
+#include "list.h"
 
 typedef struct TCAssertResult {
   int lno;

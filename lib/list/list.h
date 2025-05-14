@@ -10,6 +10,8 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "macro.h"
+
 typedef struct TCListPos {
   struct TCListPos *prev;
   struct TCListPos *next;
@@ -31,40 +33,9 @@ extern TCListIter tc_list_insert(TCListIter, TCListIter);
 extern TCList *_tc_list_new(malloc_f _malloc);
 extern unsigned char tc_list_empty(TCList *);
 
-#ifndef TC_ALLOCATOR
-#define TC_ALLOCATOR malloc, free
-#endif
-
-#ifndef _tc_get_alloc
-#define _tc_get_alloc(...) __tc_get_alloc(__VA_ARGS__)
-#define __tc_get_alloc(_malloc, _free) _malloc
-#endif
-
-#ifndef _tc_get_free
-#define _tc_get_free(...) __tc_get_free(__VA_ARGS__)
-#define __tc_get_free(_malloc, _free) _free
-#endif
-
-#ifndef _tc_list_alloc
-#define _tc_list_alloc _tc_get_alloc(TC_ALLOCATOR)
-#endif
-
-#ifndef _tc_list_free
-#define _tc_list_free _tc_get_free(TC_ALLOCATOR)
-#endif
-
 /*
- * Get the parent object pointer from its property,
- * it's type-unsafe and not applied to NULL ptr
+ * Create new list
  */
-#define tc_container_of(ptr, type, prop) \
-  ((type *)((char *)(ptr) - offsetof(type, prop)))
-
-/*
- * Match 1 - 5 variadic arguments
- */
-#define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
-
 #define tc_list_new() _tc_list_new(_tc_list_alloc)
 
 /*
@@ -140,7 +111,7 @@ extern unsigned char tc_list_empty(TCList *);
   }
 
 /*
- * Double linked list
+ * Double linked list constructor
  */
 #define _TCListType(Name, Type)                                     \
   typedef struct {                                                  \
@@ -180,7 +151,7 @@ extern unsigned char tc_list_empty(TCList *);
   }
 
 /*
- * Instrusive double linked list
+ * Instrusive double linked list constructor
  */
 #define _TCListInsv(Name, Node, Prop)                                   \
   /* clang-format off */                                      \

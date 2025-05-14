@@ -17,7 +17,7 @@ SET(CMAKE_C_STANDARD 11)
 SET(CMAKE_C_STANDARD_REQUIRED ON)  
 SET(CMAKE_C_EXTENSIONS OFF)   
 
-
+# install shared & static libs
 function(INSTALL_LIB targets)
     INSTALL(
         TARGETS ${LIB_NAME} ${LIB_NAME}_static OPTIONAL
@@ -33,6 +33,7 @@ function(INSTALL_LIB targets)
     endforeach()
 endfunction()
 
+# install header files
 function(INSTALL_HEADER targets)
     INSTALL(
         FILES ${LIB_HEADER}
@@ -49,7 +50,34 @@ function(INSTALL_HEADER targets)
     endforeach()
 endfunction()
 
-ADD_SUBDIRECTORY(lib/sum)
-ADD_SUBDIRECTORY(lib/list)
-ADD_SUBDIRECTORY(lib/utest)
+# preset lib target
+function(SET_LIB_TARGET) 
+    SET_TARGET_PROPERTIES(${LIB_NAME}_static PROPERTIES OUTPUT_NAME ${LIB_NAME})
+    SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})
+    SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}) 
+endfunction()
+
+# add include dirs for all libs
+function(ADD_LIB targets)
+    foreach(target IN LISTS targets)
+        INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib/${target})
+        ADD_SUBDIRECTORY(lib/${target})
+    endforeach()
+endfunction()
+
+# run unit tests
+function(UT_RUN)
+    if($ENV{TEST_RUN})
+        LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
+        ADD_EXECUTABLE(${LIB_TEST_BIN} ${LIB_SRC})
+        TARGET_INCLUDE_DIRECTORIES(${LIB_TEST_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/lib/utest)
+        TARGET_COMPILE_DEFINITIONS(${LIB_TEST_BIN} PRIVATE TANC_UT_ON=1)
+        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static)
+        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static) 
+    endif()
+endfunction()
+
+ADD_LIB("sum;macro;list;utest")
+
+
 
