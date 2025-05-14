@@ -19,11 +19,6 @@ SET(CMAKE_C_EXTENSIONS OFF)
 
 # install shared & static libs
 function(INSTALL_LIB targets)
-    INSTALL(
-        TARGETS ${LIB_NAME} ${LIB_NAME}_static OPTIONAL
-        LIBRARY DESTINATION ${LIBRARY_DEST} COMPONENT ${LIB_NAME}
-        ARCHIVE DESTINATION ${LIBRARY_DEST} COMPONENT ${LIB_NAME}
-    )
     foreach(target IN LISTS targets)
        INSTALL(
             TARGETS ${LIB_NAME} ${LIB_NAME}_static OPTIONAL
@@ -35,12 +30,6 @@ endfunction()
 
 # install header files
 function(INSTALL_HEADER targets)
-    INSTALL(
-        FILES ${LIB_HEADER}
-        DESTINATION ${LIBRARY_HEADER_DEST}
-        COMPONENT ${LIB_NAME}
-    )
-
     foreach(target IN LISTS targets)
         INSTALL(
             FILES ${LIB_HEADER}
