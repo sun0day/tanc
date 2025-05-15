@@ -115,7 +115,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   static inline TCSlistIter Name##_insert(TCSlistIter iter, Type x) { \
     Name##Node *node = Name##Node_new();                              \
     node->data = x;                                                   \
-    return _tc_slist_insert(iter, &node->pos);                         \
+    return _tc_slist_insert(iter, &node->pos);                        \
   }                                                                   \
                                                                       \
   static inline Type *Name##_front(Name *list) {                      \
@@ -155,7 +155,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                       \
                                                                           \
   static inline TCSlistIter Name##_insert(TCSlistIter iter, Node *node) { \
-    return _tc_slist_insert(iter, &node->Prop);                            \
+    return _tc_slist_insert(iter, &node->Prop);                           \
   }                                                                       \
                                                                           \
   static inline void Name##_push(Name *list, Node *node) {                \
