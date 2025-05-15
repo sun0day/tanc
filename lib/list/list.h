@@ -23,7 +23,7 @@ typedef struct TCList {
 extern TCListIter tc_list_end(TCList *);
 extern TCListIter tc_list_next(TCListIter);
 extern TCListIter tc_list_prev(TCListIter);
-extern TCListIter tc_list_insert(TCListIter, TCListIter);
+extern TCListIter _tc_list_insert(TCListIter, TCListIter);
 extern TCList *_tc_list_new(malloc_f _malloc);
 extern unsigned char tc_list_empty(TCList *);
 
@@ -140,7 +140,7 @@ extern unsigned char tc_list_empty(TCList *);
   static inline TCListIter Name##_insert(TCListIter iter, Type x) { \
     Name##Node *node = Name##Node_new();                            \
     node->data = x;                                                 \
-    return tc_list_insert(iter, &node->pos);                        \
+    return _tc_list_insert(iter, &node->pos);                        \
   }                                                                 \
                                                                     \
   static inline Type *Name##_front(Name *list) {                    \
@@ -180,7 +180,7 @@ extern unsigned char tc_list_empty(TCList *);
   }                                                                     \
                                                                         \
   static inline TCListIter Name##_insert(TCListIter iter, Node *node) { \
-    return tc_list_insert(iter, &node->Prop);                           \
+    return _tc_list_insert(iter, &node->Prop);                           \
   }                                                                     \
                                                                         \
   static inline void Name##_push(Name *list, Node *node) {              \

@@ -14,7 +14,7 @@ inline unsigned char tc_list_empty(TCList *list) {
          (list->_st.next == list->_st.prev && list->_st.next == &list->_st);
 }
 
-TCListIter tc_list_insert(TCListIter iter, TCListIter target) {
+TCListIter _tc_list_insert(TCListIter iter, TCListIter target) {
   target->next = iter;
   target->prev = iter->prev;
 

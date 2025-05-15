@@ -8,3 +8,4 @@ case "$(uname -s)" in
 esac
 
 $TEST_ROOT/list$TEST_BIN/list_test$TEST_SUFFIX
+$TEST_ROOT/slist$TEST_BIN/slist_test$TEST_SUFFIX

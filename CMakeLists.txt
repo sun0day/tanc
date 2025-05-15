@@ -61,12 +61,12 @@ function(UT_RUN)
         ADD_EXECUTABLE(${LIB_TEST_BIN} ${LIB_SRC})
         TARGET_INCLUDE_DIRECTORIES(${LIB_TEST_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/lib/utest)
         TARGET_COMPILE_DEFINITIONS(${LIB_TEST_BIN} PRIVATE TANC_UT_ON=1)
-        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static)
-        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static) 
+        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static list_static)
+        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static list_static) 
     endif()
 endfunction()
 
-ADD_LIB("sum;macro;list;utest")
+ADD_LIB("sum;macro;list;slist;utest")
 
 
 
