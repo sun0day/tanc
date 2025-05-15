@@ -174,13 +174,25 @@ void list_test(UTState *ut_state) {
 
   tc_ut("clear list", {
     IntList_clear(list1);
+    TCListIter begin = tc_list_begin(list1);
+    TCListIter end = tc_list_end(list1);
+
     tc_ut_assert(tc_list_empty(list1));
+    tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
     ObjList_clear(list2);
+    begin = tc_list_begin(list2);
+    end = tc_list_end(list2);
+
     tc_ut_assert(tc_list_empty(list2));
+    tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
     InsvObjs_clear(list3);
+    begin = tc_list_begin(list3);
+    end = tc_list_end(list3);
+
     tc_ut_assert(tc_list_empty(list3));
+    tc_list_each(begin, end, cur) { tc_ut_assert(0); }
   });
 
   tc_ut("free list", {

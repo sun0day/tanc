@@ -78,8 +78,8 @@ extern unsigned char tc_list_empty(TCList *);
                                                                     \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_list_alloc(sizeof(Node));              \
-    node->Prop.prev = NULL;          \
-    node->Prop.next = NULL;          \
+    node->Prop.prev = NULL;                                         \
+    node->Prop.next = NULL;                                         \
     return node;                                                    \
   }                                                                 \
                                                                     \
@@ -88,10 +88,16 @@ extern unsigned char tc_list_empty(TCList *);
       return;                                                       \
     }                                                               \
                                                                     \
-    TCListIter start = tc_list_next(tc_list_begin(list));           \
-    tc_list_each(start, tc_list_end(list), iter) {                  \
-      Node *node = tc_container_of(tc_list_prev(iter), Node, Prop); \
+    TCListIter next;                                                \
+    TCListIter cur = tc_list_begin(list);                           \
+    TCListIter end = tc_list_end(list);                             \
+    while ((cur != end) & (cur != NULL)) {                          \
+      next = tc_list_next(cur);                                     \
+                                                                    \
+      Node *node = tc_container_of(cur, Node, Prop);                \
       _tc_list_free(node);                                          \
+                                                                    \
+      cur = next;                                                   \
     }                                                               \
                                                                     \
     list->_st.prev = &list->_st;                                    \
