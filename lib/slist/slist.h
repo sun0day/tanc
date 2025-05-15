@@ -60,38 +60,33 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                 \
                                                                     \
   static void Name##_clear(Name *list) {                            \
-    if (list == NULL) {                                             \
-      return;                                                       \
+    if (list != NULL) {                                             \
+      TCSlistIter next;                                             \
+      TCSlistIter cur = tc_slist_begin(list);                       \
+      while (cur != NULL) {                                         \
+        next = tc_slist_next(cur);                                  \
+                                                                    \
+        Node *node = tc_container_of(cur, Node, Prop);              \
+        _tc_slist_free(node);                                       \
+                                                                    \
+        cur = next;                                                 \
+      }                                                             \
+                                                                    \
+      list->_st.next = NULL;                                        \
+      list->_back = &list->_st;                                     \
     }                                                               \
-                                                                    \
-    TCSlistIter next;                                               \
-    TCSlistIter cur = tc_slist_begin(list);                         \
-    while (cur != NULL) {                                           \
-      next = tc_slist_next(cur);                                    \
-                                                                    \
-      Node *node = tc_container_of(cur, Node, Prop);                \
-      _tc_slist_free(node);                                         \
-                                                                    \
-      cur = next;                                                   \
-    }                                                               \
-                                                                    \
-    list->_st.next = NULL;                                          \
-    list->_back = &list->_st;                                       \
   }                                                                 \
                                                                     \
   static void Name##_free(Name *list) {                             \
-    if (list == NULL) {                                             \
-      return;                                                       \
+    if (list != NULL) {                                             \
+      Name##_clear(list);                                           \
+                                                                    \
+      _tc_slist_free(list);                                         \
     }                                                               \
-                                                                    \
-    Name##_clear(list);                                             \
-                                                                    \
-    _tc_slist_free(list);                                           \
   }                                                                 \
                                                                     \
   static inline Node *_##Name##_at(TCSlistIter iter) {              \
-    /* clang-format on */                                           \
-    return iter == NULL ? NULL : tc_container_of(iter, Node, Prop); \
+    return iter != NULL ? tc_container_of(iter, Node, Prop) : NULL; \
   }
 
 /*
@@ -109,7 +104,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
    static inline Type *Name##_at(TCSlistIter iter) {        \
     /* clang-format on */                                             \
     Name##Node *node = _##Name##_at(iter);                            \
-    return node == NULL ? NULL : &(node->data);                       \
+    return node != NULL ? &(node->data) : NULL;                       \
   }                                                                   \
                                                                       \
   static inline TCSlistIter Name##_insert(TCSlistIter iter, Type x) { \

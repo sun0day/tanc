@@ -84,39 +84,34 @@ extern unsigned char tc_list_empty(TCList *);
   }                                                                 \
                                                                     \
   static void Name##_clear(Name *list) {                            \
-    if (list == NULL) {                                             \
-      return;                                                       \
+    if (list != NULL) {                                             \
+      TCListIter next;                                              \
+      TCListIter cur = tc_list_begin(list);                         \
+      TCListIter end = tc_list_end(list);                           \
+      while ((cur != end) & (cur != NULL)) {                        \
+        next = tc_list_next(cur);                                   \
+                                                                    \
+        Node *node = tc_container_of(cur, Node, Prop);              \
+        _tc_list_free(node);                                        \
+                                                                    \
+        cur = next;                                                 \
+      }                                                             \
+                                                                    \
+      list->_st.prev = &list->_st;                                  \
+      list->_st.next = &list->_st;                                  \
     }                                                               \
-                                                                    \
-    TCListIter next;                                                \
-    TCListIter cur = tc_list_begin(list);                           \
-    TCListIter end = tc_list_end(list);                             \
-    while ((cur != end) & (cur != NULL)) {                          \
-      next = tc_list_next(cur);                                     \
-                                                                    \
-      Node *node = tc_container_of(cur, Node, Prop);                \
-      _tc_list_free(node);                                          \
-                                                                    \
-      cur = next;                                                   \
-    }                                                               \
-                                                                    \
-    list->_st.prev = &list->_st;                                    \
-    list->_st.next = &list->_st;                                    \
   }                                                                 \
                                                                     \
   static void Name##_free(Name *list) {                             \
-    if (list == NULL) {                                             \
-      return;                                                       \
+    if (list != NULL) {                                             \
+      Name##_clear(list);                                           \
+                                                                    \
+      _tc_list_free(list);                                          \
     }                                                               \
-                                                                    \
-    Name##_clear(list);                                             \
-                                                                    \
-    _tc_list_free(list);                                            \
   }                                                                 \
                                                                     \
   static inline Node *_##Name##_at(TCListIter iter) {               \
-    /* clang-format on */                                           \
-    return iter == NULL ? NULL : tc_container_of(iter, Node, Prop); \
+    return iter != NULL ? tc_container_of(iter, Node, Prop) : NULL; \
   }
 
 /*
@@ -134,7 +129,7 @@ extern unsigned char tc_list_empty(TCList *);
   static inline Type *Name##_at(TCListIter iter) {      \
     /* clang-format on */                                           \
     Name##Node *node = _##Name##_at(iter);                          \
-    return node == NULL ? NULL : &(node->data);                     \
+    return node != NULL ? &(node->data) : NULL;                     \
   }                                                                 \
                                                                     \
   static inline TCListIter Name##_insert(TCListIter iter, Type x) { \

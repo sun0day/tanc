@@ -14,22 +14,21 @@ inline unsigned char tc_slist_empty(TCSlist *list) {
 }
 
 TCSlistIter _tc_slist_insert(TCSlistIter iter, TCSlistIter target) {
-  if (iter == NULL || target == NULL) {
-    return NULL;
+  if (iter != NULL && target != NULL) {
+    target->next = iter->next;
+    iter->next = target;
+
+    return target;
   }
-
-  target->next = iter->next;
-  iter->next = target;
-
-  return target;
+  return NULL;
 }
 
 inline TCSlistIter tc_slist_begin(TCSlist *list) {
-  return list == NULL ? NULL : tc_slist_next(&list->_st);
+  return list != NULL ? tc_slist_next(&list->_st) : NULL;
 }
 
 inline TCSlistIter tc_slist_next(TCSlistIter iter) {
-  return iter == NULL ? NULL : iter->next;
+  return iter != NULL ? iter->next : NULL;
 }
 
 #ifdef TANC_UT_ON

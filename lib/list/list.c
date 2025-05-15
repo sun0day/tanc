@@ -10,8 +10,10 @@ inline TCList *_tc_list_new(malloc_f _malloc) {
 }
 
 inline unsigned char tc_list_empty(TCList *list) {
-  return list == NULL ||
-         (list->_st.next == list->_st.prev && list->_st.next == &list->_st);
+  if (list != NULL) {
+    return list->_st.next == list->_st.prev & list->_st.next == &list->_st;
+  }
+  return 1;
 }
 
 TCListIter _tc_list_insert(TCListIter iter, TCListIter target) {
@@ -27,15 +29,15 @@ TCListIter _tc_list_insert(TCListIter iter, TCListIter target) {
 }
 
 inline TCListIter tc_list_end(TCList *list) {
-  return list == NULL ? NULL : &list->_st;
+  return list != NULL ? &list->_st : NULL;
 }
 
 inline TCListIter tc_list_next(TCListIter iter) {
-  return iter == NULL ? NULL : iter->next;
+  return iter != NULL ? iter->next : NULL;
 }
 
 inline TCListIter tc_list_prev(TCListIter iter) {
-  return iter == NULL ? NULL : iter->prev;
+  return iter != NULL ? iter->prev : NULL;
 }
 
 #ifdef TANC_UT_ON
