@@ -1,7 +1,5 @@
 #include "list.h"
 
-#include <stddef.h>
-
 inline TCList *_tc_list_new(malloc_f _malloc) {
   TCList *list = (TCList *)_malloc(sizeof(TCList));
 
@@ -53,9 +51,9 @@ typedef struct {
   TCListPos x;
 } InsvObj;
 
-TCLinkedList(IntList, int);
-TCLinkedList(ObjList, Obj);
-TCLinkedList(InsvObjs, InsvObj, x);
+TCListOf(IntList, int);
+TCListOf(ObjList, Obj);
+TCListOf(InsvObjs, InsvObj, x);
 
 void list_test(UTState *ut_state) {
   TCListIter iter;

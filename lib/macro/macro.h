@@ -7,6 +7,8 @@
 #ifndef TANC_MACRO_H
 #define TANC_MACRO_H
 
+#include <stddef.h>
+
 #ifndef TC_ALLOCATOR
 #define TC_ALLOCATOR malloc, free
 #endif
@@ -19,14 +21,6 @@
 #ifndef _tc_get_free
 #define _tc_get_free(...) __tc_get_free(__VA_ARGS__)
 #define __tc_get_free(_malloc, _free) _free
-#endif
-
-#ifndef _tc_list_alloc
-#define _tc_list_alloc _tc_get_alloc(TC_ALLOCATOR)
-#endif
-
-#ifndef _tc_list_free
-#define _tc_list_free _tc_get_free(TC_ALLOCATOR)
 #endif
 
 /*
@@ -44,5 +38,8 @@
 #ifndef tc_args_of
 #define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
 #endif
+
+typedef void *(*malloc_f)(size_t);
+typedef void (*free_f)(void *);
 
 #endif

@@ -21,7 +21,7 @@ typedef struct TCAssertResult {
   char *name;
   unsigned char passed;
 } TCAssertRt;
-TCLinkedList(TCAssertRtList, TCAssertRt);
+TCListOf(TCAssertRtList, TCAssertRt);
 
 typedef struct TCTestState {
   char *file;

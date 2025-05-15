@@ -1,14 +1,11 @@
 /*
  * @version 0.1.0
  * @copyright 2025 sun0day
- * @description Linked list
+ * @description Doubly linked list
  */
 
 #ifndef TANC_LLIST_H
 #define TANC_LLIST_H
-
-#include <stddef.h>
-#include <string.h>
 
 #include "macro.h"
 
@@ -23,15 +20,20 @@ typedef struct TCList {
   TCListPos _st;
 } TCList;
 
-typedef void *(*malloc_f)(size_t);
-typedef void (*free_f)(void *);
-
 extern TCListIter tc_list_end(TCList *);
 extern TCListIter tc_list_next(TCListIter);
 extern TCListIter tc_list_prev(TCListIter);
 extern TCListIter tc_list_insert(TCListIter, TCListIter);
 extern TCList *_tc_list_new(malloc_f _malloc);
 extern unsigned char tc_list_empty(TCList *);
+
+#ifndef _tc_list_alloc
+#define _tc_list_alloc _tc_get_alloc(TC_ALLOCATOR)
+#endif
+
+#ifndef _tc_list_free
+#define _tc_list_free _tc_get_free(TC_ALLOCATOR)
+#endif
 
 /*
  * Create new list
@@ -69,14 +71,15 @@ extern unsigned char tc_list_empty(TCList *);
        cur = tc_list_prev(cur))
 
 /*
- * Generate double linked list bases
+ * Generate doubly linked list bases
  */
 #define _TCListWrap(Name, Node, Prop)                               \
   typedef TCList Name;                                              \
                                                                     \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_list_alloc(sizeof(Node));              \
-    node->Prop = (TCListPos){.prev = NULL, .next = NULL};           \
+    node->Prop.prev = NULL;          \
+    node->Prop.next = NULL;          \
     return node;                                                    \
   }                                                                 \
                                                                     \
@@ -111,7 +114,7 @@ extern unsigned char tc_list_empty(TCList *);
   }
 
 /*
- * Double linked list constructor
+ * Doubly linked list constructor
  */
 #define _TCListType(Name, Type)                                     \
   typedef struct {                                                  \
@@ -151,7 +154,7 @@ extern unsigned char tc_list_empty(TCList *);
   }
 
 /*
- * Instrusive double linked list constructor
+ * Instrusive doubly linked list constructor
  */
 #define _TCListInsv(Name, Node, Prop)                                   \
   /* clang-format off */                                      \
@@ -182,7 +185,7 @@ extern unsigned char tc_list_empty(TCList *);
     Name##_insert(list->_st.next, node);                                \
   }
 
-#define TCLinkedList(...) \
+#define TCListOf(...) \
   tc_args_of(_1, _2, __VA_ARGS__, _TCListInsv, _TCListType)(__VA_ARGS__)
 
 #endif
