@@ -7,11 +7,9 @@
 #ifndef TANC_SLIST_H
 #define TANC_SLIST_H
 
-#include <stdint.h>
-
 #include "macro.h"
 
-typedef uintptr_t TCSlistPos;
+typedef void *TCSlistPos;
 
 typedef TCSlistPos *TCSlistIter;
 
@@ -55,7 +53,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
                                                                     \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_slist_alloc(sizeof(Node));             \
-    node->Prop = (uintptr_t)NULL;                                   \
+    node->Prop = NULL;                                              \
     return node;                                                    \
   }                                                                 \
                                                                     \
@@ -72,7 +70,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
         cur = next;                                                 \
       }                                                             \
                                                                     \
-      list->_st = (uintptr_t)NULL;                                  \
+      list->_st = NULL;                                             \
       list->_back = &list->_st;                                     \
     }                                                               \
   }                                                                 \
