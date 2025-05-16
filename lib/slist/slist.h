@@ -7,11 +7,11 @@
 #ifndef TANC_SLIST_H
 #define TANC_SLIST_H
 
+#include <stdint.h>
+
 #include "macro.h"
 
-typedef struct TCSlistPos {
-  struct TCSlistPos *next;
-} TCSlistPos;
+typedef uintptr_t TCSlistPos;
 
 typedef TCSlistPos *TCSlistIter;
 
@@ -55,7 +55,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
                                                                     \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_slist_alloc(sizeof(Node));             \
-    node->Prop.next = NULL;                                         \
+    node->Prop = (uintptr_t)NULL;                                   \
     return node;                                                    \
   }                                                                 \
                                                                     \
@@ -72,7 +72,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
         cur = next;                                                 \
       }                                                             \
                                                                     \
-      list->_st.next = NULL;                                        \
+      list->_st = (uintptr_t)NULL;                                  \
       list->_back = &list->_st;                                     \
     }                                                               \
   }                                                                 \
@@ -114,7 +114,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                   \
                                                                       \
   static inline Type *Name##_front(Name *list) {                      \
-    return Name##_at(list->_st.next);                                 \
+    return Name##_at(tc_slist_begin(list));                           \
   }                                                                   \
                                                                       \
   static inline Type *Name##_back(Name *list) {                       \
@@ -126,7 +126,11 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                   \
                                                                       \
   static inline void Name##_unshift(Name *list, Type x) {             \
+    unsigned char is_empty = tc_slist_empty(list);                    \
     Name##_insert(&list->_st, x);                                     \
+    if (is_empty) {                                                   \
+      list->_back = tc_slist_begin(list);                             \
+    }                                                                 \
   }
 
 /*
@@ -142,7 +146,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                       \
                                                                           \
   static inline Node *Name##_front(Name *list) {                          \
-    return Name##_at(list->_st.next);                                     \
+    return Name##_at(tc_slist_begin(list));                               \
   }                                                                       \
                                                                           \
   static inline Node *Name##_back(Name *list) {                           \
@@ -158,7 +162,11 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }                                                                       \
                                                                           \
   static inline void Name##_unshift(Name *list, Node *node) {             \
+    unsigned char is_empty = tc_slist_empty(list);                        \
     Name##_insert(&list->_st, node);                                      \
+    if (is_empty) {                                                       \
+      list->_back = tc_slist_begin(list);                                 \
+    }                                                                     \
   }
 
 #define TCSlistOf(...) \

@@ -3,20 +3,20 @@
 inline TCSlist *_tc_slist_new(malloc_f _malloc) {
   TCSlist *list = (TCSlist *)_malloc(sizeof(TCSlist));
 
-  list->_st.next = NULL;
+  list->_st = (uintptr_t)NULL;
   list->_back = &list->_st;
 
   return list;
 }
 
 inline unsigned char tc_slist_empty(TCSlist *list) {
-  return list == NULL || list->_st.next == NULL;
+  return list == NULL || list->_st == (uintptr_t)NULL;
 }
 
 TCSlistIter _tc_slist_insert(TCSlistIter iter, TCSlistIter target) {
   if (iter != NULL && target != NULL) {
-    target->next = iter->next;
-    iter->next = target;
+    *target = (uintptr_t)(*iter);
+    *iter = (uintptr_t)target;
 
     return target;
   }
@@ -24,11 +24,11 @@ TCSlistIter _tc_slist_insert(TCSlistIter iter, TCSlistIter target) {
 }
 
 inline TCSlistIter tc_slist_begin(TCSlist *list) {
-  return list != NULL ? tc_slist_next(&list->_st) : NULL;
+  return list != NULL ? (TCSlistIter)list->_st : NULL;
 }
 
 inline TCSlistIter tc_slist_next(TCSlistIter iter) {
-  return iter != NULL ? iter->next : NULL;
+  return iter != NULL ? (TCSlistIter)(*iter) : NULL;
 }
 
 #ifdef TANC_UT_ON
