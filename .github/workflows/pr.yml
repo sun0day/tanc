@@ -70,12 +70,12 @@ jobs:
     - name: Test library 
       if: ${{ matrix.arch == 'x64' }}
       shell: bash
-      run: ./build/test/Release/test.exe
+      run: ./test.sh
 
     - name: Verify library on arm64
       if: ${{ matrix.arch == 'arm64' }}
       shell: cmd
-      run: dumpbin /headers build\test\Release\test.exe | findstr "machine"
+      run: dumpbin /headers build\lib\list\Release\list_test.exe | findstr "machine"
 
   build_test_on_ubuntu_x86:
     permissions:
@@ -103,12 +103,11 @@ jobs:
       shell: bash
       run: |
         cmake --build ./build --config $BUILD_TYPE
-        file ./build/test/test
+        file ./build/lib/list/list_test
 
     - name: Test library
       shell: bash
-      run: |
-        ./build/test/test
+      run: chmod +x ./test.sh && ./test.sh
 
     - name: Test installation
       run: sudo cmake --install ./build
@@ -174,11 +173,10 @@ jobs:
       shell: bash
       run: |
         cmake --build ./build --config $BUILD_TYPE
-        file ./build/test/test
 
     - name: Test library 
       shell: bash
-      run: ./build/test/test
+      run: chmod +x ./test.sh && ./test.sh
 
   build_test_on_bsd:
     permissions:
@@ -234,5 +232,5 @@ jobs:
           -DCMAKE_SYSTEM_PROCESSOR=${{ matrix.arch }}
           cd ..
           cmake --build ./build --config $BUILD_TYPE
-          file ./build/test/test
-          ./build/test/test
+          file ./build/lib/list/list_test
+          chmod +x ./test.sh && ./test.sh
