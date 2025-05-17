@@ -5,13 +5,23 @@
 <p align="center">High performance C library collection</p>
 <p align="center"><img  alt="image" src="https://img.shields.io/badge/version-0.1.0-7446ff" /></p>
 
+`Tanc` is designed for simplicity and runtime speed, most of its libraries are cross-platform. `Tanc` is built from scratch, so it depends no third-party libraries.
+
 ## Library
+
+<details>
+
+<summary>Data structure</summary>
+
+**[`slist`](/lib/slist/README.md)** **[`list`](/lib/list/README.md)**
+
+</details>
 
 <details>
 
 <summary>Test</summary>
 
-**[`tanc_ut`](/tanc_ut/README.md)**
+**[`utest`](/lib/utest/README.md)**
 
 </details>
 
@@ -42,31 +52,7 @@ sudo cmake --install .  # make sure you have the right permission to access the 
 # sudo cmake --install . --component {lib}
 ```
 
-After installation, the header files are in the `/usr/include/tanc` while the static and dynamic libraries are in the `/usr/lib/tanc`.
-
-## Usage
-
-> The following is sample code usage description:
-
-```c
-#include <stdio.h>
-#include "sum/sum.h"
-
-int main() {
-  printf("%d\n", sum(1, 2));
-  return 0;
-}
-```
-
-## API
-
-> The following is sample code API description:
-
-### `int sum(int a, int b)`
-
-Calculate two `integer`s sum.
-
-
+After installation, the header files are in the `/usr/include/tanc` while the shared and static libraries are in the `/usr/lib/tanc`.
 
 ## Support
 
@@ -74,11 +60,11 @@ Calculate two `integer`s sum.
 
 ### Compiler
 
-gcc, clang, msvc
+gcc & clang & msvc
 
 ### C standard
 
-C11
+C99 & C11
 
 ### OS and arch
 
