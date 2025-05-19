@@ -55,7 +55,7 @@ inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
       .name = state->name,
       .passed = passed,
   };
-  tc_list_push(state->assert_rt, TCAssertRt,  rt);
+  tc_list_push(state->assert_rt, TCAssertRt, rt);
 
   if (state->passed == 0) {
     _tc_ut_out(state);

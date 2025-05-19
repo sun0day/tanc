@@ -89,7 +89,7 @@ extern unsigned char tc_list_empty(TCList *);
 /*
  * Generate doubly linked list bases
  */
-#define _TCListBase(Node, Prop)                               \
+#define _TCListBase(Node, Prop)                                     \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_list_alloc(sizeof(Node));              \
     node->Prop.prev = NULL;                                         \
@@ -97,7 +97,7 @@ extern unsigned char tc_list_empty(TCList *);
     return node;                                                    \
   }                                                                 \
                                                                     \
-  static void Node##_clear(TCList *list) {                            \
+  static void Node##_clear(TCList *list) {                          \
     if (list != NULL) {                                             \
       TCListIter next;                                              \
       TCListIter cur = tc_list_begin(list);                         \
@@ -116,7 +116,7 @@ extern unsigned char tc_list_empty(TCList *);
     }                                                               \
   }                                                                 \
                                                                     \
-  static void Node##_free(TCList *list) {                             \
+  static void Node##_free(TCList *list) {                           \
     if (list != NULL) {                                             \
       Node##_clear(list);                                           \
                                                                     \
@@ -131,74 +131,74 @@ extern unsigned char tc_list_empty(TCList *);
 /*
  * Doubly linked list constructor with type
  */
-#define _TCListType(Type)                                     \
-  typedef struct {                                                  \
-    Type data;                                                      \
-    TCListPos pos;                                                  \
-  } _TCLl##Type;                                                     \
-                                                                    \
+#define _TCListType(Type)                                                  \
+  typedef struct {                                                         \
+    Type data;                                                             \
+    TCListPos pos;                                                         \
+  } _TCLl##Type;                                                           \
+                                                                           \
   /* clang-format off */                                     \
   _TCListBase(_TCLl##Type, pos)                         \
                                                              \
-  static inline Type *_TCLl##Type##_at(TCListIter iter) {      \
-    /* clang-format on */                                           \
-    _TCLl##Type *node = __TCLl##Type##_at(iter);                          \
-    return node != NULL ? &(node->data) : NULL;                     \
-  }                                                                 \
-                                                                    \
-  static inline Type *_TCLl##Type##_front(TCList *list) {                    \
+  static inline Type *_TCLl##Type##_at(TCListIter iter) {             \
+    /* clang-format on */                                                  \
+    _TCLl##Type *node = __TCLl##Type##_at(iter);                           \
+    return node != NULL ? &(node->data) : NULL;                            \
+  }                                                                        \
+                                                                           \
+  static inline Type *_TCLl##Type##_front(TCList *list) {                  \
     return _TCLl##Type##_at(list->_st.next);                               \
-  }                                                                 \
-                                                                    \
-  static inline Type *_TCLl##Type##_back(TCList *list) {                     \
+  }                                                                        \
+                                                                           \
+  static inline Type *_TCLl##Type##_back(TCList *list) {                   \
     return _TCLl##Type##_at(list->_st.prev);                               \
-  }                                                                 \
-\
+  }                                                                        \
+                                                                           \
   static inline TCListIter _TCLl##Type##_insert(TCListIter iter, Type x) { \
-    _TCLl##Type *node = _TCLl##Type##_new();                            \
-    node->data = x;                                                 \
-    return _tc_list_insert(iter, &node->pos);                       \
-  }                                                                 \
-                                                                    \
-  static inline void _TCLl##Type##_push(TCList *list, Type x) {              \
+    _TCLl##Type *node = _TCLl##Type##_new();                               \
+    node->data = x;                                                        \
+    return _tc_list_insert(iter, &node->pos);                              \
+  }                                                                        \
+                                                                           \
+  static inline void _TCLl##Type##_push(TCList *list, Type x) {            \
     _TCLl##Type##_insert(&list->_st, x);                                   \
-  }                                                                 \
-                                                                    \
-  static inline void _TCLl##Type##_unshift(TCList *list, Type x) {           \
+  }                                                                        \
+                                                                           \
+  static inline void _TCLl##Type##_unshift(TCList *list, Type x) {         \
     _TCLl##Type##_insert(list->_st.next, x);                               \
   }
 
 /*
  * Doubly linked list constructor with custom node
  */
-#define _TCListNode(Node, Prop)                                   \
-  typedef Node _TCLl##Node;\
-\
+#define _TCListNode(Node, Prop)                                                \
+  typedef Node _TCLl##Node;                                                    \
+                                                                               \
   /* clang-format off */                                      \
   _TCListBase(_TCLl##Node, Prop)                               \
                                                               \
-  static inline Node *_TCLl##Node##_at(TCListIter iter) {         \
-    /* clang-format on */                                               \
-    return __TCLl##Node##_at(iter);                                          \
-  }                                                                     \
-                                                                        \
-  static inline Node *_TCLl##Node##_front(TCList *list) {                        \
+  static inline Node *_TCLl##Node##_at(TCListIter iter) {                \
+    /* clang-format on */                                                      \
+    return __TCLl##Node##_at(iter);                                            \
+  }                                                                            \
+                                                                               \
+  static inline Node *_TCLl##Node##_front(TCList *list) {                      \
     return _TCLl##Node##_at(list->_st.next);                                   \
-  }                                                                     \
-                                                                        \
-  static inline Node *_TCLl##Node##_back(TCList *list) {                         \
+  }                                                                            \
+                                                                               \
+  static inline Node *_TCLl##Node##_back(TCList *list) {                       \
     return _TCLl##Node##_at(list->_st.prev);                                   \
-  }                                                                     \
-                                                                        \
+  }                                                                            \
+                                                                               \
   static inline TCListIter _TCLl##Node##_insert(TCListIter iter, Node *node) { \
-    return _tc_list_insert(iter, &node->Prop);                          \
-  }                                                                     \
-                                                                        \
-  static inline void _TCLl##Node##_push(TCList *list, Node *node) {              \
+    return _tc_list_insert(iter, &node->Prop);                                 \
+  }                                                                            \
+                                                                               \
+  static inline void _TCLl##Node##_push(TCList *list, Node *node) {            \
     _TCLl##Node##_insert(&list->_st, node);                                    \
-  }                                                                     \
-                                                                        \
-  static inline void _TCLl##Node##_unshift(TCList *list, Node *node) {           \
+  }                                                                            \
+                                                                               \
+  static inline void _TCLl##Node##_unshift(TCList *list, Node *node) {         \
     _TCLl##Node##_insert(list->_st.next, node);                                \
   }
 

@@ -75,12 +75,12 @@ void list_test(UTState *ut_state) {
     tc_ut_assert(*tc_list_front(list1, int) == 1);
     tc_ut_assert(*tc_list_back(list1, int) == 1);
 
-    tc_list_push(list2, ObjA,  (ObjA){.v = 1});
+    tc_list_push(list2, ObjA, (ObjA){.v = 1});
     tc_ut_assert(!tc_list_empty(list2));
     tc_ut_assert(tc_list_front(list2, ObjA)->v == 1);
     tc_ut_assert(tc_list_back(list2, ObjA)->v == 1);
 
-    ObjB *ob = (ObjB*)malloc(sizeof(ObjB));
+    ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 1;
     tc_list_push(list3, ObjB, ob);
     tc_ut_assert(!tc_list_empty(list3));
@@ -89,31 +89,31 @@ void list_test(UTState *ut_state) {
   });
 
   tc_ut("unshift node", {
-    tc_list_unshift(list1,int, 2);
+    tc_list_unshift(list1, int, 2);
     tc_ut_assert(*tc_list_front(list1, int) == 2);
     tc_ut_assert(*tc_list_back(list1, int) == 1);
 
-    tc_list_unshift(list2, ObjA,(ObjA){.v = 2});
+    tc_list_unshift(list2, ObjA, (ObjA){.v = 2});
     tc_ut_assert(tc_list_front(list2, ObjA)->v == 2);
     tc_ut_assert(tc_list_back(list2, ObjA)->v == 1);
 
-    ObjB *ob = (ObjB*)malloc(sizeof(ObjB));
+    ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 2;
-    tc_list_unshift(list3,ObjB,  ob);
+    tc_list_unshift(list3, ObjB, ob);
     tc_ut_assert(tc_list_front(list3, ObjB)->v == 2);
     tc_ut_assert(tc_list_back(list3, ObjB)->v == 1);
   });
 
   tc_ut("insert node", {
     iter = tc_list_next(tc_list_begin(list1));
-    iter = tc_list_insert(iter, int,3);
+    iter = tc_list_insert(iter, int, 3);
     tc_ut_assert(*tc_list_at(iter, int) == 3);
 
     iter = tc_list_next(tc_list_begin(list2));
-    iter = tc_list_insert(iter, ObjA,  (ObjA){.v = 3});
+    iter = tc_list_insert(iter, ObjA, (ObjA){.v = 3});
     tc_ut_assert(tc_list_at(iter, ObjA)->v == 3);
 
-    ObjB *ob = (ObjB*)malloc(sizeof(ObjB));
+    ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 3;
     iter = tc_list_next(tc_list_begin(list3));
     iter = tc_list_insert(iter, ObjB, ob);
