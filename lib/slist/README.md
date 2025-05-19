@@ -72,17 +72,105 @@ Sometimes the `slist` node's default memory alignment may be not what you want, 
 ```c
 typedef struct {
   TCSlistPos pos; // embed the link into Fruit, only 1 pointer size
-  int price;
-  char kind;
+  char *name;
+  char level;
 } Fruit;
 
 TCSlistOf(Fruit, pos)  
 //               |----> tell slist what the link member is 
+
+int main() {
+  TCSlist *list3 = tc_slist_new();
+  return 0;
+}
 ```
 
 ### Add nodes 
 
+#### Add nodes to front or back
+
+```c
+// add nodes to the back of slist
+tc_slist_push(list1, int, 1);
+tc_slist_push(list2, Person, (Person){.name="alice", .age=20});
+tc_slist_push(list3, Fruit, (Fruit){.name="apple", .level='A'});
+
+// add nodes to the front of slist
+tc_slist_unshift(list1, int, 2);
+tc_slist_unshift(list2, Person, (Person){.name="bob", .age=30});
+tc_slist_unshift(list3, Fruit, (Fruit){.name="banana", .level='B'});
+```
+
+#### Add nodes to arbitrary position
+
+```c
+// add nodes to the position after the first node
+TCSlistIter iter = tc_slist_begin(list1);
+tc_slist_insert(iter, int, 3);
+
+iter = tc_slist_begin(list2);
+tc_slist_insert(iter, Person, (Person){.name="davy", .age=12});
+
+iter = tc_slist_begin(list3);
+tc_slist_insert(list3, Fruit, (Fruit){.name="cherry", .level='C'});
+```
+
+### Iterate over `slist`
+
+You can access every node from front to back through `TCSlistIter`.
+
+```c
+TCSlistIter iter = tc_slist_begin(list1); 
+
+tc_slist_each(iter, NULL, cur) {
+  printf("%d ", *tc_slist_at(cur, int)); // output 2 3 1
+}
+
+iter = tc_slist_begin(list2);
+
+tc_slist_each(iter, NULL, cur) {
+  printf("%s ", tc_slist_at(cur, Person)->name); // output bob davy alice
+}
+
+iter = tc_slist_begin(list3);
+
+tc_slist_each(iter, NULL, cur) {
+  printf("%s ", tc_slist_at(cur, Fruit)->name); // output banana cherry apple  
+}
+```
+
+Also `tc_slist_each` supports to access nodes within a certain range.
+
+```c
+TCSlistIter iter = tc_slist_begin(list1); 
+
+tc_slist_each(iter, tc_slist_next(iter), cur) {
+  printf("%d ", *tc_slist_at(cur, int)); // output 2
+}
+```
+
+### Remove nodes
+
+#### Remove all nodes
+
+```c
+tc_slist_clear(list1, int);
+tc_slist_clear(list2, Person);
+tc_slist_clear(list3, Fruit);
+```
+
 ### Free `slist`
+
+`tc_slist_free` will release the entire memory allocated by `slist`.
+
+```c
+tc_slist_free(list1, int);
+list1 = NULL;
+tc_slist_free(list2, Person);
+list2 = NULL;
+tc_slist_free(list3, Fruit);
+list3 = NULL;
+```
 
 ## API
 
