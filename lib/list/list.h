@@ -40,6 +40,22 @@ extern unsigned char tc_list_empty(TCList *);
  */
 #define tc_list_new() _tc_list_new(_tc_list_alloc)
 
+#define tc_list_push(list, Type, data) _TCLl##Type##_push(list, data)
+
+#define tc_list_unshift(list, Type, data) _TCLl##Type##_unshift(list, data)
+
+#define tc_list_insert(list, Type, data) _TCLl##Type##_insert(list, data)
+
+#define tc_list_front(list, Type) _TCLl##Type##_front(list)
+
+#define tc_list_back(list, Type) _TCLl##Type##_back(list)
+
+#define tc_list_at(iter, Type) _TCLl##Type##_at(iter)
+
+#define tc_list_clear(list, Type) _TCLl##Type##_clear(list)
+
+#define tc_list_free(list, Type) _TCLl##Type##_free(list)
+
 /*
  * Get the sentinel node's iterator
  */
@@ -73,9 +89,7 @@ extern unsigned char tc_list_empty(TCList *);
 /*
  * Generate doubly linked list bases
  */
-#define _TCListWrap(Name, Node, Prop)                               \
-  typedef TCList Name;                                              \
-                                                                    \
+#define _TCListBase(Node, Prop)                               \
   static inline Node *Node##_new() {                                \
     Node *node = (Node *)_tc_list_alloc(sizeof(Node));              \
     node->Prop.prev = NULL;                                         \
@@ -83,7 +97,7 @@ extern unsigned char tc_list_empty(TCList *);
     return node;                                                    \
   }                                                                 \
                                                                     \
-  static void Name##_clear(Name *list) {                            \
+  static void Node##_clear(TCList *list) {                            \
     if (list != NULL) {                                             \
       TCListIter next;                                              \
       TCListIter cur = tc_list_begin(list);                         \
@@ -102,91 +116,93 @@ extern unsigned char tc_list_empty(TCList *);
     }                                                               \
   }                                                                 \
                                                                     \
-  static void Name##_free(Name *list) {                             \
+  static void Node##_free(TCList *list) {                             \
     if (list != NULL) {                                             \
-      Name##_clear(list);                                           \
+      Node##_clear(list);                                           \
                                                                     \
       _tc_list_free(list);                                          \
     }                                                               \
   }                                                                 \
                                                                     \
-  static inline Node *_##Name##_at(TCListIter iter) {               \
+  static inline Node *_##Node##_at(TCListIter iter) {               \
     return iter != NULL ? tc_container_of(iter, Node, Prop) : NULL; \
   }
 
 /*
- * Doubly linked list constructor
+ * Doubly linked list constructor with type
  */
-#define _TCListType(Name, Type)                                     \
+#define _TCListType(Type)                                     \
   typedef struct {                                                  \
     Type data;                                                      \
     TCListPos pos;                                                  \
-  } Name##Node;                                                     \
+  } _TCLl##Type;                                                     \
                                                                     \
   /* clang-format off */                                     \
-  _TCListWrap(Name, Name##Node, pos)                         \
+  _TCListBase(_TCLl##Type, pos)                         \
                                                              \
-  static inline Type *Name##_at(TCListIter iter) {      \
+  static inline Type *_TCLl##Type##_at(TCListIter iter) {      \
     /* clang-format on */                                           \
-    Name##Node *node = _##Name##_at(iter);                          \
+    _TCLl##Type *node = __TCLl##Type##_at(iter);                          \
     return node != NULL ? &(node->data) : NULL;                     \
   }                                                                 \
                                                                     \
-  static inline TCListIter Name##_insert(TCListIter iter, Type x) { \
-    Name##Node *node = Name##Node_new();                            \
+  static inline Type *_TCLl##Type##_front(TCList *list) {                    \
+    return _TCLl##Type##_at(list->_st.next);                               \
+  }                                                                 \
+                                                                    \
+  static inline Type *_TCLl##Type##_back(TCList *list) {                     \
+    return _TCLl##Type##_at(list->_st.prev);                               \
+  }                                                                 \
+\
+  static inline TCListIter _TCLl##Type##_insert(TCListIter iter, Type x) { \
+    _TCLl##Type *node = _TCLl##Type##_new();                            \
     node->data = x;                                                 \
     return _tc_list_insert(iter, &node->pos);                       \
   }                                                                 \
                                                                     \
-  static inline Type *Name##_front(Name *list) {                    \
-    return Name##_at(list->_st.next);                               \
+  static inline void _TCLl##Type##_push(TCList *list, Type x) {              \
+    _TCLl##Type##_insert(&list->_st, x);                                   \
   }                                                                 \
                                                                     \
-  static inline Type *Name##_back(Name *list) {                     \
-    return Name##_at(list->_st.prev);                               \
-  }                                                                 \
-                                                                    \
-  static inline void Name##_push(Name *list, Type x) {              \
-    Name##_insert(&list->_st, x);                                   \
-  }                                                                 \
-                                                                    \
-  static inline void Name##_unshift(Name *list, Type x) {           \
-    Name##_insert(list->_st.next, x);                               \
+  static inline void _TCLl##Type##_unshift(TCList *list, Type x) {           \
+    _TCLl##Type##_insert(list->_st.next, x);                               \
   }
 
 /*
- * Instrusive doubly linked list constructor
+ * Doubly linked list constructor with custom node
  */
-#define _TCListInsv(Name, Node, Prop)                                   \
+#define _TCListNode(Node, Prop)                                   \
+  typedef Node _TCLl##Node;\
+\
   /* clang-format off */                                      \
-  _TCListWrap(Name, Node, Prop)                               \
+  _TCListBase(_TCLl##Node, Prop)                               \
                                                               \
-  static inline Node *Name##_at(TCListIter iter) {         \
+  static inline Node *_TCLl##Node##_at(TCListIter iter) {         \
     /* clang-format on */                                               \
-    return _##Name##_at(iter);                                          \
+    return __TCLl##Node##_at(iter);                                          \
   }                                                                     \
                                                                         \
-  static inline Node *Name##_front(Name *list) {                        \
-    return Name##_at(list->_st.next);                                   \
+  static inline Node *_TCLl##Node##_front(TCList *list) {                        \
+    return _TCLl##Node##_at(list->_st.next);                                   \
   }                                                                     \
                                                                         \
-  static inline Node *Name##_back(Name *list) {                         \
-    return Name##_at(list->_st.prev);                                   \
+  static inline Node *_TCLl##Node##_back(TCList *list) {                         \
+    return _TCLl##Node##_at(list->_st.prev);                                   \
   }                                                                     \
                                                                         \
-  static inline TCListIter Name##_insert(TCListIter iter, Node *node) { \
+  static inline TCListIter _TCLl##Node##_insert(TCListIter iter, Node *node) { \
     return _tc_list_insert(iter, &node->Prop);                          \
   }                                                                     \
                                                                         \
-  static inline void Name##_push(Name *list, Node *node) {              \
-    Name##_insert(&list->_st, node);                                    \
+  static inline void _TCLl##Node##_push(TCList *list, Node *node) {              \
+    _TCLl##Node##_insert(&list->_st, node);                                    \
   }                                                                     \
                                                                         \
-  static inline void Name##_unshift(Name *list, Node *node) {           \
-    Name##_insert(list->_st.next, node);                                \
+  static inline void _TCLl##Node##_unshift(TCList *list, Node *node) {           \
+    _TCLl##Node##_insert(list->_st.next, node);                                \
   }
 
 #define TCListOf(...) \
-  tc_args_of(_1, _2, __VA_ARGS__, _TCListInsv, _TCListType)(__VA_ARGS__)
+  tc_args_of(_1, _2, _3, __VA_ARGS__, _TCListNode, _TCListType)(__VA_ARGS__)
 
 #endif

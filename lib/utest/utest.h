@@ -21,12 +21,12 @@ typedef struct TCAssertResult {
   char *name;
   unsigned char passed;
 } TCAssertRt;
-TCListOf(TCAssertRtList, TCAssertRt);
+TCListOf(TCAssertRt);
 
 typedef struct TCTestState {
   char *file;
   char *name;
-  TCAssertRtList *assert_rt;
+  TCList *assert_rt;
   unsigned char passed;
 } UTState;
 

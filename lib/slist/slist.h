@@ -102,7 +102,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }
 
 /*
- * Singly linked list constructor
+ * Singly linked list constructor with type
  */
 #define _TCSlistType(Type)                                                   \
   typedef struct {                                                           \
@@ -146,7 +146,7 @@ extern unsigned char tc_slist_empty(TCSlist *);
   }
 
 /*
- * Instrusive singly linked list constructor
+ * Singly linked list constructor with custom node
  */
 #define _TCSlistNode(Node, Mem)                                         \
   typedef Node _TCSl##Node;                                             \

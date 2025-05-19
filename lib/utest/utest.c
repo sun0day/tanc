@@ -55,7 +55,7 @@ inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
       .name = state->name,
       .passed = passed,
   };
-  TCAssertRtList_push(state->assert_rt, rt);
+  tc_list_push(state->assert_rt, TCAssertRt,  rt);
 
   if (state->passed == 0) {
     _tc_ut_out(state);
@@ -64,7 +64,7 @@ inline void _tc_ut_assert(UTState *state, int lno, unsigned char passed) {
 
 // safely abort with error code
 void _tc_ut_abort(UTState *state, int err) {
-  TCAssertRtList_free(state->assert_rt);
+  tc_list_free(state->assert_rt, TCAssertRt);
 
   free(state);
 
@@ -84,8 +84,8 @@ void _tc_ut_out(UTState *state) {
 
   tc_list_each(tc_list_begin(state->assert_rt), tc_list_end(state->assert_rt),
                iter) {
-    TCAssertRt *assert_rt = TCAssertRtList_at(iter);
-    TCAssertRt *next_assert_rt = TCAssertRtList_at(tc_list_next(iter));
+    TCAssertRt *assert_rt = tc_list_at(iter, TCAssertRt);
+    TCAssertRt *next_assert_rt = tc_list_at(tc_list_next(iter), TCAssertRt);
 
     if (!next_assert_rt || assert_rt->name != next_assert_rt->name) {
       fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
