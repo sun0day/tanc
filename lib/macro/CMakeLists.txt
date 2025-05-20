@@ -1,0 +1,6 @@
+SET(LIB_HEADER macro.h)
+SET(LIB_NAME macro)
+
+ADD_LIBRARY(${LIB_NAME} INTERFACE)
+
+INSTALL_HEADER("list;slist;utest")

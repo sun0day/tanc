@@ -61,3 +61,7 @@ dkms.conf
 **/CMakeCache.txt
 **/Makefile
 test/test
+compile_commands.json
+install_manifest*
+
+.cache

@@ -11,4 +11,6 @@ cmake --build ./build --config $BUILD_TYPE
 
 ls -lh ./build
 
-./build/test/test
+chmod +x ./test.sh
+
+./test.sh
