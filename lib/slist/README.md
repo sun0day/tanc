@@ -120,21 +120,21 @@ tc_slist_insert(list3, Fruit, (Fruit){.name="cherry", .level='C'});
 You can access every node from front to back through `TCSlistIter`.
 
 ```c
-TCSlistIter iter = tc_slist_begin(list1); 
+TCSlistIter begin = tc_slist_begin(list1); 
 
-tc_slist_each(iter, NULL, cur) {
+tc_slist_each(begin, NULL, cur) {
   printf("%d ", *tc_slist_at(cur, int)); // output 2 3 1
 }
 
-iter = tc_slist_begin(list2);
+begin = tc_slist_begin(list2);
 
-tc_slist_each(iter, NULL, cur) {
+tc_slist_each(begin, NULL, cur) {
   printf("%s ", tc_slist_at(cur, Person)->name); // output bob davy alice
 }
 
-iter = tc_slist_begin(list3);
+begin = tc_slist_begin(list3);
 
-tc_slist_each(iter, NULL, cur) {
+tc_slist_each(begin, NULL, cur) {
   printf("%s ", tc_slist_at(cur, Fruit)->name); // output banana cherry apple  
 }
 ```
@@ -142,9 +142,9 @@ tc_slist_each(iter, NULL, cur) {
 Also `tc_slist_each` supports to access nodes within a certain range.
 
 ```c
-TCSlistIter iter = tc_slist_begin(list1); 
+TCSlistIter begin = tc_slist_begin(list1); 
 
-tc_slist_each(iter, tc_slist_next(iter), cur) {
+tc_slist_each(begin, tc_slist_next(begin), cur) {
   printf("%d ", *tc_slist_at(cur, int)); // output 2
 }
 ```
