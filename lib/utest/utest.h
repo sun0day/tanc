@@ -91,7 +91,7 @@ extern unsigned char _tc_ut_assert_called(void *, unsigned int num);
                                                \
   returns fn(__VA_ARGS__) { return *(returns *)_tc_ut_mock((void *)&fn); }
 
-#define tc_ut_return(fn, data) _tc_ut_return((void *)&fn,  data, 1)
+#define tc_ut_return(fn, data) _tc_ut_return((void *)&fn, data, 1)
 
 /*
  * Detect whether a expression is truthy, abort if falsy

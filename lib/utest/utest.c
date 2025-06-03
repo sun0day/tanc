@@ -50,8 +50,8 @@ void _tc_ut_fs(UTState *state, char *file) {
       // output previous file test result
       _tc_ut_out(state);
 
-    // clear mock data when changing file context
-    tc_list_clear(_mock_data, _TCMockData);
+      // clear mock data when changing file context
+      tc_list_clear(_mock_data, _TCMockData);
     }
 
     state->file = file;
@@ -109,14 +109,12 @@ _TCMockData *_tc_ut_mock_fd(void *fn_ptr) {
   TCListIter begin = tc_list_begin(_mock_data);
   TCListIter end = tc_list_end(_mock_data);
 
-
   tc_list_each(begin, end, cur) {
     _TCMockData *_mp = tc_list_at(cur, _TCMockData);
     if (_mp->fn_ptr == fn_ptr) {
       return _mp;
     }
   }
-
 
   return NULL;
 }
@@ -138,8 +136,7 @@ void *_tc_ut_mock(void *fn_ptr) {
 void _tc_ut_return(void *fn_ptr, void *value, unsigned char reset) {
   _TCMockData *_mp = _tc_ut_mock_fd(fn_ptr);
   if (_mp != NULL) {
-    if(reset) 
-      _mp->call_num = 0;
+    if (reset) _mp->call_num = 0;
     tc_list_push(_mp->data, _tc_void_ptr, value);
     return;
   }
