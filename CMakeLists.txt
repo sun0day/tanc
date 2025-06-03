@@ -67,6 +67,3 @@ function(UT_RUN)
 endfunction()
 
 ADD_LIB("macro;list;slist;utest")
-
-
-

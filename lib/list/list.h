@@ -24,7 +24,7 @@ extern TCListIter tc_list_end(TCList *);
 extern TCListIter tc_list_next(TCListIter);
 extern TCListIter tc_list_prev(TCListIter);
 extern TCListIter _tc_list_insert(TCListIter, TCListIter);
-extern TCList *_tc_list_new(malloc_f _malloc);
+extern TCList *_tc_list_new(_tc_malloc_ptr _malloc);
 extern unsigned char tc_list_empty(TCList *);
 
 #ifndef _tc_list_alloc

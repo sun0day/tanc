@@ -21,7 +21,7 @@ typedef struct TCSlist {
 extern TCSlistIter tc_slist_begin(TCSlist *);
 extern TCSlistIter tc_slist_next(TCSlistIter);
 extern TCSlistIter _tc_slist_insert(TCSlistIter, TCSlistIter);
-extern TCSlist *_tc_slist_new(malloc_f _malloc);
+extern TCSlist *_tc_slist_new(_tc_malloc_ptr _malloc);
 extern unsigned char tc_slist_empty(TCSlist *);
 
 #ifndef _tc_slist_alloc

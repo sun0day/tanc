@@ -1,6 +1,6 @@
 #include "slist.h"
 
-inline TCSlist *_tc_slist_new(malloc_f _malloc) {
+inline TCSlist *_tc_slist_new(_tc_malloc_ptr _malloc) {
   TCSlist *list = (TCSlist *)_malloc(sizeof(TCSlist));
 
   list->_st = NULL;

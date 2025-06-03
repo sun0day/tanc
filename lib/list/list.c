@@ -1,6 +1,6 @@
 #include "list.h"
 
-inline TCList *_tc_list_new(malloc_f _malloc) {
+inline TCList *_tc_list_new(_tc_malloc_ptr _malloc) {
   TCList *list = (TCList *)_malloc(sizeof(TCList));
 
   list->_st.prev = &list->_st;
@@ -44,6 +44,10 @@ inline TCListIter tc_list_prev(TCListIter iter) {
 
 #include "utest.h"
 
+#define TC_ALLOCATOR tc_ut_malloc, tc_ut_free
+
+#include "list.h"
+
 typedef struct {
   int v;
 } ObjA;
@@ -67,6 +71,7 @@ void list_test(UTState *ut_state) {
     tc_ut_assert(tc_list_empty(list1));
     tc_ut_assert(tc_list_empty(list2));
     tc_ut_assert(tc_list_empty(list3));
+    tc_ut_assert_called(malloc, 3);
   });
 
   tc_ut("push node", {
@@ -176,6 +181,8 @@ void list_test(UTState *ut_state) {
 
   tc_ut("clear list", {
     tc_list_clear(list1, int);
+    tc_ut_assert_called(free, 3);
+
     TCListIter begin = tc_list_begin(list1);
     TCListIter end = tc_list_end(list1);
 
@@ -183,6 +190,8 @@ void list_test(UTState *ut_state) {
     tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
     tc_list_clear(list2, ObjA);
+    tc_ut_assert_called(free, 6);
+
     begin = tc_list_begin(list2);
     end = tc_list_end(list2);
 
@@ -190,6 +199,8 @@ void list_test(UTState *ut_state) {
     tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
     tc_list_clear(list3, ObjB);
+    tc_ut_assert_called(free, 9);
+
     begin = tc_list_begin(list3);
     end = tc_list_end(list3);
 
@@ -198,16 +209,22 @@ void list_test(UTState *ut_state) {
   });
 
   tc_ut("free list", {
-    tc_list_clear(list1, int);
+    tc_list_free(list1, int);
     list1 = NULL;
+
+    tc_ut_assert_called(free, 10);
     tc_ut_assert(tc_list_empty(list1));
 
     tc_list_free(list2, ObjA);
     list2 = NULL;
+
+    tc_ut_assert_called(free, 11);
     tc_ut_assert(tc_list_empty(list2));
 
     tc_list_free(list3, ObjB);
     list3 = NULL;
+
+    tc_ut_assert_called(free, 12);
     tc_ut_assert(tc_list_empty(list3));
   });
 }

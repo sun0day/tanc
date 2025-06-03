@@ -39,7 +39,8 @@
 #define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
 #endif
 
-typedef void *(*malloc_f)(size_t);
-typedef void (*free_f)(void *);
+typedef void *(*_tc_malloc_ptr)(size_t);
+typedef void (*_tc_free_ptr)(void *);
+typedef void *_tc_void_ptr;
 
 #endif

@@ -4,7 +4,7 @@ alias tcconfig="echo '\n-------> Configure cmake <-------\n' && mkdir build 2>/d
 alias tcbuild="tcconfig && echo '\n-------> Build libs <-------\n' && cmake --build build"
 alias tctest="export TEST_RUN=1 && tcbuild && echo '\n-------> Run tests <-------\n' && ./test.sh"
 alias tcinstall="sudo cmake --install build"
-alias tcexpand="gcc -E" 
+alias tcexpand="gcc -E -DTANC_UT_ON=1 -I lib/macro -I lib/utest" 
 alias tcclean="rm -rf build **/{CMakeFiles,cmake_install.cmake,CMakeCache.txt,Makefile,install_manifest}* 2>/dev/null || true && echo '\nTmp files cleaned!\n'"
 alias tclint="clang-format -i **/*.c **/*.h"
 alias tcout="TEST_RUN=1 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
