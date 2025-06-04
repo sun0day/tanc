@@ -2,7 +2,7 @@
 
 ## What's Tanc
 
-`Tanc` is a high performance library collection in C, it is designed for simplicity and runtime speed, most of its libraries are cross-platform. `Tanc` is built from scratch, so it depends no third-party libraries.
+`Tanc` is a high performance `C` library collection, it is designed for simplicity and runtime speed, most of its libraries are cross-platform. `Tanc` is built from scratch, so it depends no third-party libraries.
 
 ## Support
 
