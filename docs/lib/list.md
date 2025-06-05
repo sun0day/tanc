@@ -60,7 +60,7 @@ int main() {
 // define my_malloc and my_free
 #include "my_alloc.h" 
 // use your own malloc and free
-#define TC_ALLOCATOR my_malloc, my_free 
+#define tc_allocator my_malloc, my_free 
 #include <tanc/list.h>
 
 TCListOf(int)
