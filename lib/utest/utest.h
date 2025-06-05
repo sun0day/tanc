@@ -7,15 +7,22 @@
 #ifndef TANC_UTEST_H
 #define TANC_UTEST_H
 
+#include <errno.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "list.h"
 #include "common.h"
+#include "list.h"
 
 #ifndef TANC_UT_ON
 #define TANC_UT_ON
+#endif
+
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#ifndef ENODATA
+#define ENODATA ENOATTR
+#endif
 #endif
 
 /*
