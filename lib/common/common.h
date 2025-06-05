@@ -1,7 +1,7 @@
 /*
  * @version 0.1.0
  * @copyright 2025 sun0day
- * @description Macro for TANC
+ * @description Common macro & type for Tanc
  */
 
 #ifndef TANC_MACRO_H
@@ -9,8 +9,8 @@
 
 #include <stddef.h>
 
-#ifndef TC_ALLOCATOR
-#define TC_ALLOCATOR malloc, free
+#ifndef tc_allocator
+#define tc_allocator malloc, free
 #endif
 
 #ifndef _tc_get_alloc

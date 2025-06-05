@@ -66,4 +66,4 @@ function(UT_RUN)
     endif()
 endfunction()
 
-ADD_LIB("macro;list;slist;utest")
+ADD_LIB("common;list;slist;utest")

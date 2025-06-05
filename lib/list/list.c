@@ -44,7 +44,7 @@ inline TCListIter tc_list_prev(TCListIter iter) {
 
 #include "utest.h"
 
-#define TC_ALLOCATOR tc_ut_malloc, tc_ut_free
+#define tc_allocator tc_ut_malloc, tc_ut_free
 
 #include "list.h"
 

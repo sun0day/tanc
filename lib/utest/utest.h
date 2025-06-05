@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #include "list.h"
-#include "macro.h"
+#include "common.h"
 
 #ifndef TANC_UT_ON
 #define TANC_UT_ON
