@@ -1,5 +1,5 @@
-SET(LIB_HEADER macro.h)
-SET(LIB_NAME macro)
+SET(LIB_HEADER common.h)
+SET(LIB_NAME common)
 
 ADD_LIBRARY(${LIB_NAME} INTERFACE)
 

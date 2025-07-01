@@ -21,7 +21,7 @@ export default defineConfig({
           link: '/guide/introduction',
         },
         {
-          text: 'Quick Start',
+          text: 'Quick start',
           link: '/guide/quick-start',
         },
       ],

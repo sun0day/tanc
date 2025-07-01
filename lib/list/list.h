@@ -7,7 +7,7 @@
 #ifndef TANC_LLIST_H
 #define TANC_LLIST_H
 
-#include "macro.h"
+#include "common.h"
 
 typedef struct TCListPos {
   struct TCListPos *prev;
@@ -24,15 +24,15 @@ extern TCListIter tc_list_end(TCList *);
 extern TCListIter tc_list_next(TCListIter);
 extern TCListIter tc_list_prev(TCListIter);
 extern TCListIter _tc_list_insert(TCListIter, TCListIter);
-extern TCList *_tc_list_new(malloc_f _malloc);
+extern TCList *_tc_list_new(_tc_malloc_ptr _malloc);
 extern unsigned char tc_list_empty(TCList *);
 
 #ifndef _tc_list_alloc
-#define _tc_list_alloc _tc_get_alloc(TC_ALLOCATOR)
+#define _tc_list_alloc _tc_get_alloc(TCAllocator)
 #endif
 
 #ifndef _tc_list_free
-#define _tc_list_free _tc_get_free(TC_ALLOCATOR)
+#define _tc_list_free _tc_get_free(TCAllocator)
 #endif
 
 /*
