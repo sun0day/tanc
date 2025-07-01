@@ -78,8 +78,8 @@ extern unsigned char _tc_ut_assert_called(char *, uint32_t num);
 /*
  * Run test handlers
  */
-#define tc_ut_run(...)                                                    \
-  do {                                                                    \
+#define tc_ut_run(...)                                                     \
+  do {                                                                     \
     _tc_ut_handler ut_handlers[] = {__VA_ARGS__};                          \
     _tc_ut_run(ut_handlers, sizeof(ut_handlers) / sizeof(_tc_ut_handler)); \
   } while (0);
@@ -94,7 +94,7 @@ extern unsigned char _tc_ut_assert_called(char *, uint32_t num);
     __VA_ARGS__                    \
   } while (0);
 
-#define tc_ut_mock(returns, fn, ...)           \
+#define tc_ut_mock(returns, fn, ...) \
   returns fn(__VA_ARGS__) { return *(returns *)_tc_ut_mock(#fn); }
 
 #define tc_ut_return(fn, data) _tc_ut_return(#fn, (void *)&data)

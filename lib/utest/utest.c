@@ -9,7 +9,10 @@
 
 static TCList *_mock_data;
 
-/* Execution utils */
+
+/***********************************************************
+ *                  Execution  utils                       *
+ ***********************************************************/
 
 // run test handlers
 void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
@@ -92,7 +95,9 @@ void _tc_ut_out(TCUtState *state) {
   }
 }
 
-/* Mock utils */
+/***********************************************************
+ *                     Mock  utils                         *
+ ***********************************************************/
 
 inline void *tc_ut_malloc(size_t size) {
   char *fn = "malloc";
@@ -124,7 +129,6 @@ _TCMockData *_tc_ut_mock_fd(char *fn) {
   return NULL;
 }
 
-
 void *_tc_ut_mock(char *fn) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
 
@@ -143,11 +147,11 @@ void *_tc_ut_mock(char *fn) {
 void _tc_ut_mock_clear(char *fn) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
 
-  if(mk != NULL) {
+  if (mk != NULL) {
     mk->call_num = 0;
     tc_list_clear(mk->data, _tc_void_ptr);
     // TODO: clear param status
-  } 
+  }
 }
 
 void _tc_ut_return(char *fn, void *value) {
@@ -164,14 +168,18 @@ void _tc_ut_return(char *fn, void *value) {
                ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
-/* Assert utils */
+/***********************************************************
+ *                    Assert  utils                        *
+ ***********************************************************/
 
 // store assert result
 inline void _tc_ut_assert(TCUtState *state, unsigned int lno,
                           unsigned char passed) {
   state->passed &= passed;
 
-  tc_list_push(state->assert_rt, _TCAssertRt, ((_TCAssertRt){.lno = lno,.name = state->name,.passed = passed}));
+  tc_list_push(
+      state->assert_rt, _TCAssertRt,
+      ((_TCAssertRt){.lno = lno, .name = state->name, .passed = passed}));
 
   if (state->passed == 0) {
     _tc_ut_out(state);
