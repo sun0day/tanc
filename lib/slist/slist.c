@@ -48,7 +48,7 @@ TCSlistOf(int);
 TCSlistOf(ObjA);
 TCSlistOf(ObjB, x);
 
-void list_test(UTState *ut_state) {
+void list_test(TCUtState *ut_state) {
   TCSlistIter iter;
   TCSlist *list1 = tc_slist_new();
   TCSlist *list2 = tc_slist_new();
