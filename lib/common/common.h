@@ -9,8 +9,8 @@
 
 #include <stddef.h>
 
-#ifndef tc_allocator
-#define tc_allocator malloc, free
+#ifndef TCAllocator
+#define TCAllocator malloc, free
 #endif
 
 #ifndef _tc_get_alloc

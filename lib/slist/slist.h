@@ -25,11 +25,11 @@ extern TCSlist *_tc_slist_new(_tc_malloc_ptr _malloc);
 extern unsigned char tc_slist_empty(TCSlist *);
 
 #ifndef _tc_slist_alloc
-#define _tc_slist_alloc _tc_get_alloc(tc_allocator)
+#define _tc_slist_alloc _tc_get_alloc(TCAllocator)
 #endif
 
 #ifndef _tc_slist_free
-#define _tc_slist_free _tc_get_free(tc_allocator)
+#define _tc_slist_free _tc_get_free(TCAllocator)
 #endif
 
 /*
