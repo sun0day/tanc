@@ -1,10 +1,9 @@
 # Doubly linked list
 
-- :apple: Generic types support: `list` can store any type of data 
-- :whale: Type safe: `list` getter/setter will block mismatched arguments
+- :apple: Generic types
 - :zap: High performance
-- :rainbow: Allocator free: you can use your own `malloc` and `free`
-- :christmas_tree: Memory efficient: `list` is intrusive
+- :christmas_tree: Memory efficient
+- :rainbow: Allocator free
 
 ## Install
 
@@ -179,11 +178,9 @@ tc_list_clear(list3, Fruit);
 
 ```c
 tc_list_free(list1, int);
-list1 = NULL;
 tc_list_free(list2, Person);
-list2 = NULL;
 tc_list_free(list3, Fruit);
-list3 = NULL;
+// list1, list2, list3 are set to NULL automatically after free
 ```
 
 ## API

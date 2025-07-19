@@ -1,10 +1,9 @@
 # Singly linked list(slist)
 
-- :apple: Generic types support: `slist` can store any type of data 
-- :whale: Type safe: `slist` getter/setter will block mismatched arguments
+- :apple: Generic types
 - :zap: High performance
-- :rainbow: Allocator free: you can use your own `malloc` and `free`
-- :christmas_tree: Memory efficient: `slist` is intrusive
+- :christmas_tree: Memory efficient
+- :rainbow: Allocator free
 
 ## Install
 
@@ -165,11 +164,9 @@ tc_slist_clear(list3, Fruit);
 
 ```c
 tc_slist_free(list1, int);
-list1 = NULL;
 tc_slist_free(list2, Person);
-list2 = NULL;
 tc_slist_free(list3, Fruit);
-list3 = NULL;
+// list1, list2, list3 are set to NULL automatically after free
 ```
 
 ## API

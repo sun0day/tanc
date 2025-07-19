@@ -51,7 +51,11 @@ extern unsigned char tc_slist_empty(TCSlist *);
 
 #define tc_slist_clear(list, Type) _TCSl##Type##_clear(list)
 
-#define tc_slist_free(list, Type) _TCSl##Type##_free(list)
+#define tc_slist_free(list, Type) \
+  do {                            \
+    _TCSl##Type##_free(list);     \
+    list = NULL;                  \
+  } while (0);
 
 /*
  * Iterate over list elements until

@@ -54,7 +54,11 @@ extern unsigned char tc_list_empty(TCList *);
 
 #define tc_list_clear(list, Type) _TCLl##Type##_clear(list)
 
-#define tc_list_free(list, Type) _TCLl##Type##_free(list)
+#define tc_list_free(list, Type) \
+  do {                           \
+    _TCLl##Type##_free(list);    \
+    list = NULL;                 \
+  } while (0);
 
 /*
  * Get the sentinel node's iterator

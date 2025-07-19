@@ -164,7 +164,7 @@ void _tc_ut_return(char *fn, void *value) {
   TCList *data = tc_list_new();
   tc_list_append(data, _tc_void_ptr, value);
   tc_list_append(_mock_data, _TCMockData,
-               ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
+                 ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
 /***********************************************************

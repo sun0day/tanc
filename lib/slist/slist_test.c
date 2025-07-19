@@ -136,19 +136,16 @@ void list_test(TCUtState *ut_state) {
   tc_ut("free list", {
     tc_ut_mock_clear(free);
     tc_slist_free(list1, int);
-    list1 = NULL;
     tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list1));
 
     tc_ut_mock_clear(free);
     tc_slist_free(list2, ObjA);
-    list2 = NULL;
     tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list2));
 
     tc_ut_mock_clear(free);
     tc_slist_free(list3, ObjB);
-    list3 = NULL;
     tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list3));
   });
