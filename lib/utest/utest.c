@@ -9,9 +9,8 @@
 
 static TCList *_mock_data;
 
-
 /***********************************************************
- *                  Execution  utils                       *
+ *                   Execution utils                       *
  ***********************************************************/
 
 // run test handlers
@@ -96,7 +95,7 @@ void _tc_ut_out(TCUtState *state) {
 }
 
 /***********************************************************
- *                     Mock  utils                         *
+ *                      Mock utils                         *
  ***********************************************************/
 
 inline void *tc_ut_malloc(size_t size) {
@@ -169,7 +168,7 @@ void _tc_ut_return(char *fn, void *value) {
 }
 
 /***********************************************************
- *                    Assert  utils                        *
+ *                     Assert utils                        *
  ***********************************************************/
 
 // store assert result
