@@ -30,37 +30,43 @@ void list_test(TCUtState *ut_state) {
     tc_ut_assert_called(malloc, 3);
   });
 
-  tc_ut("push node", {
-    tc_list_push(list1, int, 1);
+  tc_ut("append node", {
+    tc_ut_mock_clear(malloc);
+    tc_list_append(list1, int, 1);
     tc_ut_assert(!tc_list_empty(list1));
     tc_ut_assert(*tc_list_front(list1, int) == 1);
     tc_ut_assert(*tc_list_back(list1, int) == 1);
+    tc_ut_assert_called(malloc, 1);
 
-    tc_list_push(list2, ObjA, (ObjA){.v = 1});
+    tc_ut_mock_clear(malloc);
+    tc_list_append(list2, ObjA, (ObjA){.v = 1});
     tc_ut_assert(!tc_list_empty(list2));
     tc_ut_assert(tc_list_front(list2, ObjA)->v == 1);
     tc_ut_assert(tc_list_back(list2, ObjA)->v == 1);
+    tc_ut_assert_called(malloc, 1);
 
     ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 1;
-    tc_list_push(list3, ObjB, ob);
+    tc_ut_mock_clear(malloc);
+    tc_list_append(list3, ObjB, ob);
     tc_ut_assert(!tc_list_empty(list3));
     tc_ut_assert(tc_list_front(list3, ObjB)->v == 1);
     tc_ut_assert(tc_list_back(list3, ObjB)->v == 1);
+    tc_ut_assert_called(malloc, 0);
   });
 
-  tc_ut("unshift node", {
-    tc_list_unshift(list1, int, 2);
+  tc_ut("prepend node", {
+    tc_list_prepend(list1, int, 2);
     tc_ut_assert(*tc_list_front(list1, int) == 2);
     tc_ut_assert(*tc_list_back(list1, int) == 1);
 
-    tc_list_unshift(list2, ObjA, (ObjA){.v = 2});
+    tc_list_prepend(list2, ObjA, (ObjA){.v = 2});
     tc_ut_assert(tc_list_front(list2, ObjA)->v == 2);
     tc_ut_assert(tc_list_back(list2, ObjA)->v == 1);
 
     ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 2;
-    tc_list_unshift(list3, ObjB, ob);
+    tc_list_prepend(list3, ObjB, ob);
     tc_ut_assert(tc_list_front(list3, ObjB)->v == 2);
     tc_ut_assert(tc_list_back(list3, ObjB)->v == 1);
   });
@@ -145,8 +151,10 @@ void list_test(TCUtState *ut_state) {
     tc_ut_assert(tc_list_empty(list1));
     tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
+    tc_ut_mock_clear(free);
+
     tc_list_clear(list2, ObjA);
-    tc_ut_assert_called(free, 6);
+    tc_ut_assert_called(free, 3);
 
     begin = tc_list_begin(list2);
     end = tc_list_end(list2);
@@ -154,8 +162,9 @@ void list_test(TCUtState *ut_state) {
     tc_ut_assert(tc_list_empty(list2));
     tc_list_each(begin, end, cur) { tc_ut_assert(0); }
 
+    tc_ut_mock_clear(free);
     tc_list_clear(list3, ObjB);
-    tc_ut_assert_called(free, 9);
+    tc_ut_assert_called(free, 3);
 
     begin = tc_list_begin(list3);
     end = tc_list_end(list3);
@@ -168,19 +177,16 @@ void list_test(TCUtState *ut_state) {
     tc_ut_mock_clear(free);
     tc_list_free(list1, int);
     list1 = NULL;
-
     tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_list_empty(list1));
 
     tc_list_free(list2, ObjA);
     list2 = NULL;
-
     tc_ut_assert_called(free, 2);
     tc_ut_assert(tc_list_empty(list2));
 
     tc_list_free(list3, ObjB);
     list3 = NULL;
-
     tc_ut_assert_called(free, 3);
     tc_ut_assert(tc_list_empty(list3));
   });

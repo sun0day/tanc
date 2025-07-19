@@ -37,9 +37,9 @@ extern unsigned char tc_slist_empty(TCSlist *);
  */
 #define tc_slist_new() _tc_slist_new(_tc_slist_alloc)
 
-#define tc_slist_push(list, Type, data) _TCSl##Type##_push(list, data)
+#define tc_slist_append(list, Type, data) _TCSl##Type##_push(list, data)
 
-#define tc_slist_unshift(list, Type, data) _TCSl##Type##_unshift(list, data)
+#define tc_slist_prepend(list, Type, data) _TCSl##Type##_unshift(list, data)
 
 #define tc_slist_insert(list, Type, data) _TCSl##Type##_insert(list, data)
 

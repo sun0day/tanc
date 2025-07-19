@@ -1,4 +1,7 @@
 #include "utest.h"
+
+#define TCAllocator tc_ut_malloc, tc_ut_free
+
 #include "slist.h"
 
 typedef struct {
@@ -24,39 +27,40 @@ void list_test(TCUtState *ut_state) {
     tc_ut_assert(tc_slist_empty(list1));
     tc_ut_assert(tc_slist_empty(list2));
     tc_ut_assert(tc_slist_empty(list3));
+    tc_ut_assert_called(malloc, 3);
   });
 
-  tc_ut("push node", {
-    tc_slist_push(list1, int, 1);
+  tc_ut("append node", {
+    tc_slist_append(list1, int, 1);
     tc_ut_assert(!tc_slist_empty(list1));
     tc_ut_assert(*tc_slist_front(list1, int) == 1);
     tc_ut_assert(*tc_slist_back(list1, int) == 1);
 
-    tc_slist_push(list2, ObjA, (ObjA){.v = 1});
+    tc_slist_append(list2, ObjA, (ObjA){.v = 1});
     tc_ut_assert(!tc_slist_empty(list2));
     tc_ut_assert(tc_slist_front(list2, ObjA)->v == 1);
     tc_ut_assert(tc_slist_back(list2, ObjA)->v == 1);
 
     ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 1;
-    tc_slist_push(list3, ObjB, ob);
+    tc_slist_append(list3, ObjB, ob);
     tc_ut_assert(!tc_slist_empty(list3));
     tc_ut_assert(tc_slist_front(list3, ObjB)->v == 1);
     tc_ut_assert(tc_slist_back(list3, ObjB)->v == 1);
   });
 
-  tc_ut("unshift node", {
-    tc_slist_unshift(list1, int, 2);
+  tc_ut("prepend node", {
+    tc_slist_prepend(list1, int, 2);
     tc_ut_assert(*tc_slist_front(list1, int) == 2);
     tc_ut_assert(*tc_slist_back(list1, int) == 1);
 
-    tc_slist_unshift(list2, ObjA, (ObjA){.v = 2});
+    tc_slist_prepend(list2, ObjA, (ObjA){.v = 2});
     tc_ut_assert(tc_slist_front(list2, ObjA)->v == 2);
     tc_ut_assert(tc_slist_back(list2, ObjA)->v == 1);
 
     ObjB *ob = (ObjB *)malloc(sizeof(ObjB));
     ob->v = 2;
-    tc_slist_unshift(list3, ObjB, ob);
+    tc_slist_prepend(list3, ObjB, ob);
     tc_ut_assert(tc_slist_front(list3, ObjB)->v == 2);
     tc_ut_assert(tc_slist_back(list3, ObjB)->v == 1);
   });
@@ -103,18 +107,26 @@ void list_test(TCUtState *ut_state) {
 
   tc_ut("clear list", {
     tc_slist_clear(list1, int);
+    tc_ut_assert_called(free, 3);
+
     TCSlistIter begin = tc_slist_begin(list1);
 
     tc_ut_assert(tc_slist_empty(list1));
     tc_slist_each(begin, NULL, cur) { tc_ut_assert(0); }
 
+    tc_ut_mock_clear(free);
     tc_slist_clear(list2, ObjA);
+    tc_ut_assert_called(free, 3);
+
     begin = tc_slist_begin(list2);
 
     tc_ut_assert(tc_slist_empty(list2));
     tc_slist_each(begin, NULL, cur) { tc_ut_assert(0); }
 
+    tc_ut_mock_clear(free);
     tc_slist_clear(list3, ObjB);
+    tc_ut_assert_called(free, 3);
+
     begin = tc_slist_begin(list3);
 
     tc_ut_assert(tc_slist_empty(list3));
@@ -122,16 +134,22 @@ void list_test(TCUtState *ut_state) {
   });
 
   tc_ut("free list", {
+    tc_ut_mock_clear(free);
     tc_slist_free(list1, int);
     list1 = NULL;
+    tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list1));
 
+    tc_ut_mock_clear(free);
     tc_slist_free(list2, ObjA);
     list2 = NULL;
+    tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list2));
 
+    tc_ut_mock_clear(free);
     tc_slist_free(list3, ObjB);
     list3 = NULL;
+    tc_ut_assert_called(free, 1);
     tc_ut_assert(tc_slist_empty(list3));
   });
 }

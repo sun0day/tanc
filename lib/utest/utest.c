@@ -157,13 +157,13 @@ void _tc_ut_return(char *fn, void *value) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
 
   if (mk != NULL) {
-    tc_list_push(mk->data, _tc_void_ptr, value);
+    tc_list_append(mk->data, _tc_void_ptr, value);
     return;
   }
 
   TCList *data = tc_list_new();
-  tc_list_push(data, _tc_void_ptr, value);
-  tc_list_push(_mock_data, _TCMockData,
+  tc_list_append(data, _tc_void_ptr, value);
+  tc_list_append(_mock_data, _TCMockData,
                ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
@@ -176,7 +176,7 @@ inline void _tc_ut_assert(TCUtState *state, unsigned int lno,
                           unsigned char passed) {
   state->passed &= passed;
 
-  tc_list_push(
+  tc_list_append(
       state->assert_rt, _TCAssertRt,
       ((_TCAssertRt){.lno = lno, .name = state->name, .passed = passed}));
 

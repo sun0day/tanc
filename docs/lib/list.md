@@ -91,14 +91,14 @@ int main() {
 
 ```c
 // add nodes to the back of list
-tc_list_push(list1, int, 1);
-tc_list_push(list2, Person, (Person){.name="alice", .age=20});
-tc_list_push(list3, Fruit, (Fruit){.name="apple", .level='A'});
+tc_list_append(list1, int, 1);
+tc_list_append(list2, Person, (Person){.name="alice", .age=20});
+tc_list_append(list3, Fruit, (Fruit){.name="apple", .level='A'});
 
 // add nodes to the front of list
-tc_list_unshift(list1, int, 2);
-tc_list_unshift(list2, Person, (Person){.name="bob", .age=30});
-tc_list_unshift(list3, Fruit, (Fruit){.name="banana", .level='B'});
+tc_list_prepend(list1, int, 2);
+tc_list_prepend(list2, Person, (Person){.name="bob", .age=30});
+tc_list_prepend(list3, Fruit, (Fruit){.name="banana", .level='B'});
 ```
 
 #### Add nodes to arbitrary position
