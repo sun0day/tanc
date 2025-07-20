@@ -77,10 +77,13 @@ void _tc_ut_out(TCUtState *state) {
   fprintf(stdout, "\n%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
           state->file);
 
-  tc_list_each(tc_list_begin(state->assert_rt), tc_list_end(state->assert_rt),
-               iter) {
+  TCListIter end = tc_list_end(state->assert_rt);
+  tc_list_each(tc_list_begin(state->assert_rt), end, iter) {
+    TCListIter next_iter = tc_list_next(iter);
+
     _TCAssertRt *assert_rt = tc_list_at(iter, _TCAssertRt);
-    _TCAssertRt *next_assert_rt = tc_list_at(tc_list_next(iter), _TCAssertRt);
+    _TCAssertRt *next_assert_rt =
+        next_iter != end ? tc_list_at(next_iter, _TCAssertRt) : NULL;
 
     if (!next_assert_rt || assert_rt->name != next_assert_rt->name) {
       fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
