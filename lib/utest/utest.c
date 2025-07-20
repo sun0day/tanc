@@ -13,6 +13,16 @@ static TCList *_mock_data;
  *                   Execution utils                       *
  ***********************************************************/
 
+// safely abort with error code
+void _tc_ut_abort(TCUtState *state, int err) {
+  tc_list_free(state->assert_rt, _TCAssertRt);
+  tc_list_free(_mock_data, _TCMockData);
+
+  free(state);
+
+  exit(err);
+}
+
 // run test handlers
 void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
   TCUtState *state = (TCUtState *)malloc(sizeof(TCUtState));
@@ -30,6 +40,7 @@ void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
 
   // output last file test result
   _tc_ut_out(state);
+  _tc_ut_abort(state, 0);
 }
 
 // init file test result
@@ -47,7 +58,7 @@ void _tc_ut_fs(TCUtState *state, char *file) {
     state->passed = 1;
 
     if (state->assert_rt) {
-      free(state->assert_rt);
+      tc_list_free(state->assert_rt, _TCAssertRt);
     }
     state->assert_rt = tc_list_new();
   }
@@ -55,16 +66,6 @@ void _tc_ut_fs(TCUtState *state, char *file) {
 
 // run test case
 inline void _tc_ut(TCUtState *state, char *name) { state->name = name; }
-
-// safely abort with error code
-void _tc_ut_abort(TCUtState *state, int err) {
-  tc_list_free(state->assert_rt, _TCAssertRt);
-  tc_list_free(_mock_data, _TCMockData);
-
-  free(state);
-
-  exit(err);
-}
 
 // output test result
 void _tc_ut_out(TCUtState *state) {
