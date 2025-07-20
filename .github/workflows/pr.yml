@@ -20,7 +20,6 @@ env:
   INSTALL_PREFIX: /usr
   BUILD_TYPE: Release
   TEST_RUN: '1'
-  ASAN: '0'
 
 jobs:
   check_format:

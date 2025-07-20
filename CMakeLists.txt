@@ -66,9 +66,12 @@ function(UT_RUN)
     endif()
 endfunction()
 
- # set sanitizer
+# set sanitizer
+if(NOT DEFINED ENV{ASAN})
+    set(ENV{ASAN} "0")
+endif()
 if($ENV{TEST_RUN} AND $ENV{ASAN} AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    ADD_COMPILE_OPTIONS("-fsanitize=address,undefind")
+    ADD_COMPILE_OPTIONS("-fsanitize=address,undefned")
     ADD_COMPILE_OPTIONS("-fno-omit-frame-pointer")
     ADD_LINK_OPTIONS("-fsanitize=address,undefined")
 endif()
