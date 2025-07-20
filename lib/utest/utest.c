@@ -15,10 +15,10 @@ static TCList *_mock_data_list;
 
 // safely abort with error code
 void _tc_ut_abort(TCUtState *state, int err) {
-  if(state != NULL)
-    tc_list_free(state->assert_rt, _TCAssertRt);
+  if (state != NULL) tc_list_free(state->assert_rt, _TCAssertRt);
 
-  tc_list_each(tc_list_begin(_mock_data_list), tc_list_end(_mock_data_list), cur) {
+  tc_list_each(tc_list_begin(_mock_data_list), tc_list_end(_mock_data_list),
+               cur) {
     _TCMockData *mock_data = tc_list_at(cur, _TCMockData);
     tc_list_free(mock_data->data, _tc_void_ptr);
     // TODO: free param nodes
