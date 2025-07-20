@@ -7,7 +7,7 @@
 
 #include "list.h"
 
-static TCList *_mock_data;
+static TCList *_mock_data_list;
 
 /***********************************************************
  *                   Execution utils                       *
@@ -15,8 +15,17 @@ static TCList *_mock_data;
 
 // safely abort with error code
 void _tc_ut_abort(TCUtState *state, int err) {
-  tc_list_free(state->assert_rt, _TCAssertRt);
-  tc_list_free(_mock_data, _TCMockData);
+  if(state != NULL)
+    tc_list_free(state->assert_rt, _TCAssertRt);
+
+  tc_list_each(tc_list_begin(_mock_data_list), tc_list_end(_mock_data_list), cur) {
+    _TCMockData *mock_data = tc_list_at(cur, _TCMockData);
+    tc_list_free(mock_data->data, _tc_void_ptr);
+    // TODO: free param nodes
+    // free(mock_data->param);
+  }
+
+  tc_list_free(_mock_data_list, _TCMockData);
 
   free(state);
 
@@ -26,7 +35,7 @@ void _tc_ut_abort(TCUtState *state, int err) {
 // run test handlers
 void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
   TCUtState *state = (TCUtState *)malloc(sizeof(TCUtState));
-  if (_mock_data == NULL) _mock_data = tc_list_new();
+  if (_mock_data_list == NULL) _mock_data_list = tc_list_new();
 
   state->file = NULL;
   state->name = NULL;
@@ -51,7 +60,7 @@ void _tc_ut_fs(TCUtState *state, char *file) {
       _tc_ut_out(state);
 
       // clear mock data when changing file context
-      tc_list_clear(_mock_data, _TCMockData);
+      tc_list_clear(_mock_data_list, _TCMockData);
     }
 
     state->file = file;
@@ -119,8 +128,8 @@ inline void tc_ut_free(void *ptr) {
 }
 
 _TCMockData *_tc_ut_mock_fd(char *fn) {
-  TCListIter begin = tc_list_begin(_mock_data);
-  TCListIter end = tc_list_end(_mock_data);
+  TCListIter begin = tc_list_begin(_mock_data_list);
+  TCListIter end = tc_list_end(_mock_data_list);
 
   tc_list_each(begin, end, cur) {
     _TCMockData *mk = tc_list_at(cur, _TCMockData);
@@ -138,13 +147,12 @@ void *_tc_ut_mock(char *fn) {
   if (mk != NULL) {
     mk->call_num++;
 
+    // TODO: replace with tc_list_shift
     return tc_list_front(mk->data, _tc_void_ptr);
   }
 
   // abort if no mock data provided
-  tc_list_free(_mock_data, _TCMockData);
-
-  exit(ENODATA);
+  _tc_ut_abort(NULL, ENODATA);
 }
 
 void _tc_ut_mock_clear(char *fn) {
@@ -167,7 +175,7 @@ void _tc_ut_return(char *fn, void *value) {
 
   TCList *data = tc_list_new();
   tc_list_append(data, _tc_void_ptr, value);
-  tc_list_append(_mock_data, _TCMockData,
+  tc_list_append(_mock_data_list, _TCMockData,
                  ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
