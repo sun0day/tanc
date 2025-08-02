@@ -2,11 +2,9 @@
 
 ## What's Tanc
 
-`Tanc` is a high performance `C` library containing data structures, algorithms and utilities, it is designed for simplicity and runtime speed, most of its libraries are cross-platform. `Tanc` is built from scratch, it only depends on `C` standard library.
+`Tanc` is a high performance `C` library of data structures, algorithms and utilities, it is designed for simplicity, portable and fast runtime speed. `Tanc` is built from scratch, it only depends on `C` standard library.
 
 ## Support
-
-**Most** of the repo's libs work on:
 
 ### Compiler
 
