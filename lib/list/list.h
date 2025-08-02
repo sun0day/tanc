@@ -7,7 +7,7 @@
 #ifndef TANC_LLIST_H
 #define TANC_LLIST_H
 
-#include "macro.h"
+#include "common.h"
 
 typedef struct TCListPos {
   struct TCListPos *prev;
@@ -24,15 +24,15 @@ extern TCListIter tc_list_end(TCList *);
 extern TCListIter tc_list_next(TCListIter);
 extern TCListIter tc_list_prev(TCListIter);
 extern TCListIter _tc_list_insert(TCListIter, TCListIter);
-extern TCList *_tc_list_new(malloc_f _malloc);
+extern TCList *_tc_list_new(_tc_malloc_ptr _malloc);
 extern unsigned char tc_list_empty(TCList *);
 
 #ifndef _tc_list_alloc
-#define _tc_list_alloc _tc_get_alloc(TC_ALLOCATOR)
+#define _tc_list_alloc _tc_get_alloc(TCAllocator)
 #endif
 
 #ifndef _tc_list_free
-#define _tc_list_free _tc_get_free(TC_ALLOCATOR)
+#define _tc_list_free _tc_get_free(TCAllocator)
 #endif
 
 /*
@@ -40,9 +40,9 @@ extern unsigned char tc_list_empty(TCList *);
  */
 #define tc_list_new() _tc_list_new(_tc_list_alloc)
 
-#define tc_list_push(list, Type, data) _TCLl##Type##_push(list, data)
+#define tc_list_append(list, Type, data) _TCLl##Type##_push(list, data)
 
-#define tc_list_unshift(list, Type, data) _TCLl##Type##_unshift(list, data)
+#define tc_list_prepend(list, Type, data) _TCLl##Type##_unshift(list, data)
 
 #define tc_list_insert(list, Type, data) _TCLl##Type##_insert(list, data)
 
@@ -54,7 +54,11 @@ extern unsigned char tc_list_empty(TCList *);
 
 #define tc_list_clear(list, Type) _TCLl##Type##_clear(list)
 
-#define tc_list_free(list, Type) _TCLl##Type##_free(list)
+#define tc_list_free(list, Type) \
+  do {                           \
+    _TCLl##Type##_free(list);    \
+    list = NULL;                 \
+  } while (0);
 
 /*
  * Get the sentinel node's iterator

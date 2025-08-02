@@ -58,15 +58,22 @@ endfunction()
 function(UT_RUN)
     if($ENV{TEST_RUN})
         LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
-        ADD_EXECUTABLE(${LIB_TEST_BIN} ${LIB_SRC})
+        ADD_EXECUTABLE(${LIB_TEST_BIN} ${LIB_TEST_SRC})
         TARGET_INCLUDE_DIRECTORIES(${LIB_TEST_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/lib/utest)
         TARGET_COMPILE_DEFINITIONS(${LIB_TEST_BIN} PRIVATE TANC_UT_ON=1)
-        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static list_static)
-        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static list_static) 
+        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static list_static ${LIB_NAME}_static)
+        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static list_static ${LIB_NAME}_static) 
     endif()
 endfunction()
 
-ADD_LIB("macro;list;slist;utest")
+# set sanitizer
+if(NOT DEFINED ENV{ASAN})
+    set(ENV{ASAN} "0")
+endif()
+if($ENV{TEST_RUN} AND $ENV{ASAN} AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    ADD_COMPILE_OPTIONS("-fsanitize=address,undefined")
+    ADD_COMPILE_OPTIONS("-fno-omit-frame-pointer")
+    ADD_LINK_OPTIONS("-fsanitize=address,undefined")
+endif()
 
-
-
+ADD_LIB("common;list;slist;utest")

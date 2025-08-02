@@ -93,6 +93,7 @@ jobs:
     - name: Configure CMake 
       shell: bash
       run: |
+        export ASAN=1
         mkdir build
         cd build
         cmake .. \
@@ -161,6 +162,7 @@ jobs:
     - name: Configure CMake 
       shell: bash
       run: |
+        export ASAN=1
         mkdir build
         cd build
         cmake .. \

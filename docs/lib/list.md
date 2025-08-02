@@ -1,10 +1,9 @@
 # Doubly linked list
 
-- :apple: Generic types support: `list` can store any type of data 
-- :whale: Type safe: `list` getter/setter will block mismatched arguments
+- :apple: Generic types
 - :zap: High performance
-- :rainbow: Allocator free: you can use your own `malloc` and `free`
-- :christmas_tree: Memory efficient: `list` is intrusive
+- :christmas_tree: Memory efficient
+- :rainbow: Allocator free
 
 ## Install
 
@@ -60,7 +59,7 @@ int main() {
 // define my_malloc and my_free
 #include "my_alloc.h" 
 // use your own malloc and free
-#define TC_ALLOCATOR my_malloc, my_free 
+#define TCAllocator my_malloc, my_free 
 #include <tanc/list.h>
 
 TCListOf(int)
@@ -91,14 +90,14 @@ int main() {
 
 ```c
 // add nodes to the back of list
-tc_list_push(list1, int, 1);
-tc_list_push(list2, Person, (Person){.name="alice", .age=20});
-tc_list_push(list3, Fruit, (Fruit){.name="apple", .level='A'});
+tc_list_append(list1, int, 1);
+tc_list_append(list2, Person, (Person){.name="alice", .age=20});
+tc_list_append(list3, Fruit, (Fruit){.name="apple", .level='A'});
 
 // add nodes to the front of list
-tc_list_unshift(list1, int, 2);
-tc_list_unshift(list2, Person, (Person){.name="bob", .age=30});
-tc_list_unshift(list3, Fruit, (Fruit){.name="banana", .level='B'});
+tc_list_prepend(list1, int, 2);
+tc_list_prepend(list2, Person, (Person){.name="bob", .age=30});
+tc_list_prepend(list3, Fruit, (Fruit){.name="banana", .level='B'});
 ```
 
 #### Add nodes to arbitrary position
@@ -179,11 +178,9 @@ tc_list_clear(list3, Fruit);
 
 ```c
 tc_list_free(list1, int);
-list1 = NULL;
 tc_list_free(list2, Person);
-list2 = NULL;
 tc_list_free(list3, Fruit);
-list3 = NULL;
+// list1, list2, list3 are set to NULL automatically after free
 ```
 
 ## API

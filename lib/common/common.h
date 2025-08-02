@@ -1,7 +1,7 @@
 /*
  * @version 0.1.0
  * @copyright 2025 sun0day
- * @description Macro for TANC
+ * @description Common macro & type for Tanc
  */
 
 #ifndef TANC_MACRO_H
@@ -9,8 +9,8 @@
 
 #include <stddef.h>
 
-#ifndef TC_ALLOCATOR
-#define TC_ALLOCATOR malloc, free
+#ifndef TCAllocator
+#define TCAllocator malloc, free
 #endif
 
 #ifndef _tc_get_alloc
@@ -39,7 +39,8 @@
 #define tc_args_of(_1, _2, _3, _4, _5, Name, ...) Name
 #endif
 
-typedef void *(*malloc_f)(size_t);
-typedef void (*free_f)(void *);
+typedef void *(*_tc_malloc_ptr)(size_t);
+typedef void (*_tc_free_ptr)(void *);
+typedef void *_tc_void_ptr;
 
 #endif

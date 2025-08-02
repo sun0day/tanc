@@ -1,6 +1,7 @@
 SET(LIB_NAME list)
 SET(LIB_HEADER list.h)
 SET(LIB_SRC list.c)
+SET(LIB_TEST_SRC list_test.c)
 SET(LIB_TEST_BIN list_test)
 
 ADD_LIBRARY(${LIB_NAME} SHARED ${LIB_SRC})
