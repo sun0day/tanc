@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Tanc"
-  text: "High performance C libraries"
+  text: "High performance C data structures, algorithms and utilities"
   actions:
     - theme: brand
       text: Guide

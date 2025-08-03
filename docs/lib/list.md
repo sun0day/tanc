@@ -1,9 +1,17 @@
 # Doubly linked list
 
-- :apple: Generic types
+> A doubly linked list is a linked data structure that consists of a set of sequentially linked records called nodes. Each node contains three fields: **two link fields** (references to the previous and to the next node in the sequence of nodes) and **one data field**. 
+
+In `Tanc`, the node's two link fields are wrappered in a struct called `TCListPos`. The `prev` and `next` members of `TCListPos` store the previous and the next `TCListPos` addresses. This makes it easy to embed the `TCListPos` to your own data structure for a more compact memory layout. By default, the node's data field `data` of any type is placed together with a `TCListPos` field. The doubly linked list `TCList` itself only has a sentinel `TCListPos` for manipulating and traversing its nodes.
+
+![design](./list.svg)
+
+## Features
+
+- :apple: Generic types: `TCList` are suitable for any data type
 - :zap: High performance
-- :christmas_tree: Memory efficient
-- :rainbow: Allocator free
+- :christmas_tree: Memory efficient: only 2 additional pointer size for each node and the list
+- :rainbow: Allocator free: you can use your own `malloc` and `free`
 
 ## Install
 
@@ -28,7 +36,7 @@ After installation, the header files are in the `/usr/include/tanc` while the sh
 
 ## Usage
 
-### Create `list`
+### Create list
 
 ```c
 #include <stdio.h>
@@ -53,7 +61,7 @@ int main() {
 }
 ```
 
-`TCListOf(Type)` is used to declare  `list` node's data type. By default, `list` uses standard `malloc` and `free` interfaces as its internal allocator, you can decide where the `malloc` and `free` implementations come from, e.g: `stdlib`. You can also use your own `malloc` and `free`:
+`TCListOf(Type)` is used to declare  list node's data type. By default, list uses standard `malloc` and `free` interfaces as its internal allocator, you can decide where the `malloc` and `free` implementations come from, e.g: `stdlib`. You can also use your own `malloc` and `free`:
 
 ```c
 // define my_malloc and my_free
@@ -66,7 +74,7 @@ TCListOf(int)
 //...
 ```
 
-Sometimes the `list` node's default memory alignment may be not what you want, you can define a new node type with more compact memory layout by yourself.
+Sometimes the list node's default memory alignment may be not what you want, you can define a new node type with more compact memory layout by yourself.
 
 ```c
 typedef struct {
@@ -114,7 +122,7 @@ iter = tc_list_begin(list3);
 tc_list_insert(list3, Fruit, (Fruit){.name="cherry", .level='C'});
 ```
 
-### Iterate over `list`
+### Iterate over list
 
 You can access each node from front to back through `TCListIter`.
 
@@ -172,9 +180,9 @@ tc_list_clear(list2, Person);
 tc_list_clear(list3, Fruit);
 ```
 
-### Free `list`
+### Free list
 
-`tc_list_free` will release the entire memory allocated by `list`.
+`tc_list_free` will release the entire memory allocated by list.
 
 ```c
 tc_list_free(list1, int);

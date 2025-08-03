@@ -1,9 +1,17 @@
 # Singly linked list(slist)
 
-- :apple: Generic types
+> A singly linked list is a linked data structure that consists of a set of sequentially linked records called nodes. Each node contains two fields: **one link field** (references to the next node in the sequence of nodes) and **one data field**. 
+
+In `Tanc`, the node's link field is called `TCSlistPos`. `TCSlistPos` stores the next `TCSlistPos` address. This makes it easy to embed the `TCSlistPos` to your own data structure for a more compact memory layout. By default, the node's data field `data` of any type is placed together with a `TCSlistPos` field. The singly linked list `TCSlist` itself only has two sentinel `TCSlistPos`s for manipulating and traversing its nodes.
+
+![slist](./slist.svg)
+
+## Features
+
+- :apple: Generic types: `TCSlist` are suitable for any data type
 - :zap: High performance
-- :christmas_tree: Memory efficient
-- :rainbow: Allocator free
+- :christmas_tree: Memory efficient: only 1 additional pointer size for each node and 2 additional pointer size for the list
+- :rainbow: Allocator free: you can use your own `malloc` and `free`
 
 ## Install
 
