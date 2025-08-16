@@ -24,7 +24,7 @@ void print_test(TCUtState *ut_state) {
     tc_ut_assert(_tc_stdio_len == 0);
     tc_ut_assert(_tc_stdio_thres == 8);
     tc_ut_assert(_tc_stdio_caps == 10);
-    tc_ut_assert(!_tc_stdio_buf);
+    tc_ut_assert(strlen(_tc_stdio_buf) == 0);
   });
   tc_ut("stdio buffer not reach threshold", {
     char *str = "test";
@@ -59,6 +59,8 @@ void print_test(TCUtState *ut_state) {
     tc_ut_assert(!strcmp(print_str[0], "tester"));
     tc_ut_assert(!strcmp(print_str[1], "tester"));
   });
+
+  tc_print_clean();
 }
 
 int main() {
