@@ -24,7 +24,7 @@ void print_test(TCUtState *ut_state) {
     tc_ut_assert(_tc_stdio_len == 0);
     tc_ut_assert(_tc_stdio_thres == 8);
     tc_ut_assert(_tc_stdio_caps == 10);
-    printf("%d", strlen(_tc_stdio_buf));
+    memset(_tc_stdio_buf, 0, _tc_stdio_caps);
     tc_ut_assert(strlen(_tc_stdio_buf) == 0);
   });
   tc_ut("stdio buffer not reach threshold", {
