@@ -59,10 +59,15 @@ function(UT_RUN)
     if($ENV{TEST_RUN})
         LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
         ADD_EXECUTABLE(${LIB_TEST_BIN} ${LIB_TEST_SRC})
-        TARGET_INCLUDE_DIRECTORIES(${LIB_TEST_BIN} PUBLIC ${CMAKE_SOURCE_DIR}/lib/utest)
+        TARGET_INCLUDE_DIRECTORIES(
+            ${LIB_TEST_BIN} 
+            PUBLIC ${CMAKE_SOURCE_DIR}/lib/utest 
+            ${CMAKE_SOURCE_DIR}/lib/list 
+            ${CMAKE_SOURCE_DIR}/lib/print
+        )
         TARGET_COMPILE_DEFINITIONS(${LIB_TEST_BIN} PRIVATE TANC_UT_ON=1)
-        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static list_static ${LIB_NAME}_static)
-        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static list_static ${LIB_NAME}_static) 
+        TARGET_LINK_LIBRARIES(${LIB_TEST_BIN} PRIVATE utest_static list_static print_static ${LIB_NAME}_static)
+        ADD_DEPENDENCIES(${LIB_TEST_BIN} utest_static list_static print_static ${LIB_NAME}_static) 
     endif()
 endfunction()
 
@@ -81,4 +86,4 @@ if(
     ADD_LINK_OPTIONS("-fsanitize=address,undefined")
 endif()
 
-ADD_LIB("common;list;slist;print;utest")
+ADD_LIB("common;list;print;slist;utest")

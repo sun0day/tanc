@@ -60,8 +60,6 @@ void print_test(TCUtState *ut_state) {
     tc_ut_assert(!strcmp(print_str[0], "tester"));
     tc_ut_assert(!strcmp(print_str[1], "tester"));
   });
-
-  tc_print_clean();
 }
 
 int main() {

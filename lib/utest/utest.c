@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "list.h"
+#include "print.h"
 
 static TCList *_mock_data_list;
 
@@ -29,11 +30,15 @@ void _tc_ut_abort(TCUtState *state, int err) {
 
   free(state);
 
+  tc_print_clean();
+
   exit(err);
 }
 
 // run test handlers
 void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
+  tc_print_set_buf(256);
+
   TCUtState *state = (TCUtState *)malloc(sizeof(TCUtState));
   if (_mock_data_list == NULL) _mock_data_list = tc_list_new();
 
@@ -80,12 +85,12 @@ inline void _tc_ut(TCUtState *state, char *name) { state->name = name; }
 void _tc_ut_out(TCUtState *state) {
   if (state->file == NULL || state->assert_rt == NULL ||
       tc_list_empty(state->assert_rt) == 1) {
-    fprintf(stderr, "No test cases or assertions found!\n");
+    tc_print(stderr, "No test cases or assertions found!\n");
     _tc_ut_abort(state, ENODATA);
   }
 
-  fprintf(stdout, "\n%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
-          state->file);
+  tc_print(stdout, "\n%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
+           state->file);
 
   TCListIter end = tc_list_end(state->assert_rt);
   tc_list_each(tc_list_begin(state->assert_rt), end, iter) {
@@ -96,11 +101,11 @@ void _tc_ut_out(TCUtState *state) {
         next_iter != end ? tc_list_at(next_iter, _TCAssertRt) : NULL;
 
     if (!next_assert_rt || assert_rt->name != next_assert_rt->name) {
-      fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
-              assert_rt->passed ? "✔" : "✘", assert_rt->name);
+      tc_print(assert_rt->passed ? stdout : stderr, "       %s %s\n",
+               assert_rt->passed ? "✔" : "✘", assert_rt->name);
 
       if (assert_rt->passed == 0) {
-        fprintf(stderr, "\n         Error: line %d\n", assert_rt->lno);
+        tc_print(stderr, "\n         Error: line %d\n", assert_rt->lno);
         _tc_ut_abort(state, EIO);
       }
     }

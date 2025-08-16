@@ -5,7 +5,7 @@ alias tcbuild="tcconfig && echo '\n-------> Build libs <-------\n' && cmake --bu
 alias tctest="export TEST_RUN=1 ASAN=1 && tcbuild && echo '\n-------> Run tests <-------\n' && ./test.sh"
 alias tcinstall="sudo cmake --install build"
 alias tcexpand="gcc -E -DTANC_UT_ON=1 -I lib/common -I lib/utest" 
-alias tcclean="rm -rf build **/{CMakeFiles,cmake_install.cmake,CMakeCache.txt,Makefile,install_manifest}* 2>/dev/null || true && echo '\nTmp files cleaned!\n'"
+alias tcclean="rm -rf build **/CMakeFiles **/cmake_install.cmake **/CMakeCache.txt **/Makefile 2>/dev/null || true && echo '\nTmp files cleaned!\n'"
 alias tclint="clang-format -i **/*.c **/*.h"
 alias tcout="TEST_RUN=1 ASAN=1 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 alias tcdov="cd docs && npm run docs:dev"
