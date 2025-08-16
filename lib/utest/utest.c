@@ -30,7 +30,8 @@ void _tc_ut_abort(TCUtState *state, int err) {
 
   free(state);
 
-  tc_print_clean();
+  tc_print_clean(stdout);
+  tc_print_clean(stderr);
 
   exit(err);
 }

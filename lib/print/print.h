@@ -7,6 +7,7 @@
 #ifndef TANC_PRINT_H
 #define TANC_PRINT_H
 
+#include <_stdio.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -44,13 +45,13 @@
     _tc_stdio_len = 0;                          \
   } while (0);
 
-#define tc_print_clean() _tc_print_clean(_tc_print_free)
+#define tc_print_clean(stream) _tc_print_clean(stream, _tc_print_free)
 
 extern char *_tc_stdio_buf;
 extern size_t _tc_stdio_caps;
 extern size_t _tc_stdio_len;
 extern size_t _tc_stdio_thres;
 extern void _tc_print_set_buf(size_t, _tc_malloc_ptr, _tc_free_ptr);
-extern void _tc_print_clean(_tc_free_ptr);
+extern void _tc_print_clean(FILE *, _tc_free_ptr);
 
 #endif

@@ -23,6 +23,10 @@ void _tc_print_set_buf(size_t size, _tc_malloc_ptr _malloc,
   _tc_stdio_buf = (char *)_malloc(size);
 }
 
-inline void _tc_print_clean(_tc_free_ptr _free) {
-  if (_tc_stdio_buf) _free(_tc_stdio_buf);
+inline void _tc_print_clean(FILE *stream, _tc_free_ptr _free) {
+  tc_print_flush(stream);
+  if (_tc_stdio_buf) {
+    _free(_tc_stdio_buf);
+    _tc_stdio_buf = NULL;
+  }
 }
