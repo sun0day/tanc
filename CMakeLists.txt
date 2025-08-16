@@ -70,10 +70,15 @@ endfunction()
 if(NOT DEFINED ENV{ASAN})
     set(ENV{ASAN} "0")
 endif()
-if($ENV{TEST_RUN} AND $ENV{ASAN} AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+
+if(
+    (DEFINED ENV{TEST_RUN} AND $ENV{TEST_RUN}) AND 
+    (DEFINED ENV{ASAN} AND $ENV{ASAN}) AND 
+    (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+)
     ADD_COMPILE_OPTIONS("-fsanitize=address,undefined")
     ADD_COMPILE_OPTIONS("-fno-omit-frame-pointer")
     ADD_LINK_OPTIONS("-fsanitize=address,undefined")
 endif()
 
-ADD_LIB("common;list;slist;utest")
+ADD_LIB("common;list;slist;print;utest")
