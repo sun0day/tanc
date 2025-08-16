@@ -7,7 +7,6 @@
 #ifndef TANC_PRINT_H
 #define TANC_PRINT_H
 
-#include <_stdio.h>
 #include <stdio.h>
 #include <string.h>
 
