@@ -15,6 +15,7 @@ void mock_fprintf(char *str) {
   print_str[i] = malloc(size);
   strncpy(print_str[i], str, size);
   i++;
+  tc_ut_arg_str(str);
 }
 
 void print_test(TCUtState *ut_state) {
@@ -36,14 +37,17 @@ void print_test(TCUtState *ut_state) {
     tc_ut_assert(!strcmp(_tc_stdio_buf, "test"));
   });
   tc_ut("stdio buffer reach threshold", {
-    char *str = "test";
+    char *str = "test1";
     tc_print(stdout, "%s", str);
     tc_ut_assert(_tc_stdio_len == 0);
     tc_ut_assert(_tc_stdio_thres == 8);
     tc_ut_assert(_tc_stdio_caps == 10);
     tc_ut_assert(!strcmp(_tc_stdio_buf, ""));
+    tc_ut_assert_arg_str(mock_fprintf, str, "test");
+    // TODO:
+    // tc_ut_assert_arg_str(mock_fprintf, str, "test1");
     tc_ut_assert(!strcmp(print_str[0], "test"));
-    tc_ut_assert(!strcmp(print_str[1], "test"));
+    tc_ut_assert(!strcmp(print_str[1], "test1"));
   });
   tc_ut("stdio buffer overflow", {
     i = 0;
