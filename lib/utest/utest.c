@@ -269,7 +269,7 @@ unsigned char _tc_ut_assert_arg_str(const char *fn, char *name,
                                     char *expected) {
   _TCMockArg *arg = _tc_ut_mock_arg_fd(fn, name);
 
-  if (arg) {
+  if (arg && arg->value) {
     return strcmp(expected, (char *)arg->value) == 0;
   }
 
