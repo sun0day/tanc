@@ -220,12 +220,14 @@ void _tc_ut_return(char *fn, void *value) {
                  ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
-void _tc_ut_arg(const char *fn, char *name, void *val_ptr, size_t size) {
+void _tc_ut_arg(const char *fn, char *name, void *val_ptr, size_t len) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
   _TCMockArg arg =
-      ((_TCMockArg){.name = name, .value = (char *)(malloc(size))});
+      ((_TCMockArg){.name = name, .value = (char *)(malloc(len + 1))});
 
-  strncpy(arg.value, val_ptr, size);
+  strncpy(arg.value, val_ptr, len);
+
+  ((char *)arg.value)[len] = '\0';
 
   if (mk) {
     tc_list_append(mk->args, _TCMockArg, arg);
