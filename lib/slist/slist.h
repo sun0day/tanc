@@ -37,9 +37,9 @@ extern unsigned char tc_slist_empty(TCSlist *);
  */
 #define tc_slist_new() _tc_slist_new(_tc_slist_alloc)
 
-#define tc_slist_append(list, Type, data) _TCSl##Type##_push(list, data)
+#define tc_slist_append(list, Type, data) _TCSl##Type##_append(list, data)
 
-#define tc_slist_prepend(list, Type, data) _TCSl##Type##_unshift(list, data)
+#define tc_slist_prepend(list, Type, data) _TCSl##Type##_prepend(list, data)
 
 #define tc_slist_insert(list, Type, data) _TCSl##Type##_insert(list, data)
 
@@ -137,11 +137,11 @@ extern unsigned char tc_slist_empty(TCSlist *);
     return _TCSl##Type##_at(list->_back);                                    \
   }                                                                          \
                                                                              \
-  static inline void _TCSl##Type##_push(TCSlist *list, Type x) {             \
+  static inline void _TCSl##Type##_append(TCSlist *list, Type x) {           \
     list->_back = _TCSl##Type##_insert(list->_back, x);                      \
   }                                                                          \
                                                                              \
-  static inline void _TCSl##Type##_unshift(TCSlist *list, Type x) {          \
+  static inline void _TCSl##Type##_prepend(TCSlist *list, Type x) {          \
     unsigned char is_empty = tc_slist_empty(list);                           \
     _TCSl##Type##_insert(&list->_st, x);                                     \
     if (is_empty) {                                                          \
@@ -176,11 +176,11 @@ extern unsigned char tc_slist_empty(TCSlist *);
     return _tc_slist_insert(iter, &node->Mem);                          \
   }                                                                     \
                                                                         \
-  static inline void _TCSl##Node##_push(TCSlist *list, Node *node) {    \
+  static inline void _TCSl##Node##_append(TCSlist *list, Node *node) {  \
     list->_back = _TCSl##Node##_insert(list->_back, node);              \
   }                                                                     \
                                                                         \
-  static inline void _TCSl##Node##_unshift(TCSlist *list, Node *node) { \
+  static inline void _TCSl##Node##_prepend(TCSlist *list, Node *node) { \
     unsigned char is_empty = tc_slist_empty(list);                      \
     _TCSl##Node##_insert(&list->_st, node);                             \
     if (is_empty) {                                                     \
