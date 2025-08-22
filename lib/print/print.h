@@ -28,7 +28,7 @@
     int writen_size = snprintf(_tc_stdio_buf + _tc_stdio_len,                \
                                _tc_stdio_caps - _tc_stdio_len, __VA_ARGS__); \
     _tc_stdio_len = _tc_stdio_len + writen_size;                             \
-    if (_tc_stdio_len >= _tc_stdio_thres) {                                  \
+    if (_tc_stdio_len >= _tc_stdio_caps) {                                   \
       *(_tc_stdio_buf + _tc_stdio_len - writen_size) = '\0';                 \
       tc_print_flush(stream);                                                \
       fprintf(stream, __VA_ARGS__);                                          \
@@ -49,7 +49,6 @@
 extern char *_tc_stdio_buf;
 extern size_t _tc_stdio_caps;
 extern size_t _tc_stdio_len;
-extern size_t _tc_stdio_thres;
 extern void _tc_print_set_buf(size_t, _tc_malloc_ptr, _tc_free_ptr);
 extern void _tc_print_clean(FILE *, _tc_free_ptr);
 
