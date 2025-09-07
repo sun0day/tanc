@@ -40,9 +40,9 @@ extern unsigned char tc_list_empty(TCList *);
  */
 #define tc_list_new() _tc_list_new(_tc_list_alloc)
 
-#define tc_list_append(list, Type, data) _TCLl##Type##_push(list, data)
+#define tc_list_append(list, Type, data) _TCLl##Type##_append(list, data)
 
-#define tc_list_prepend(list, Type, data) _TCLl##Type##_unshift(list, data)
+#define tc_list_prepend(list, Type, data) _TCLl##Type##_prepend(list, data)
 
 #define tc_list_insert(list, Type, data) _TCLl##Type##_insert(list, data)
 
@@ -164,11 +164,11 @@ extern unsigned char tc_list_empty(TCList *);
     return _tc_list_insert(iter, &node->pos);                              \
   }                                                                        \
                                                                            \
-  static inline void _TCLl##Type##_push(TCList *list, Type x) {            \
+  static inline void _TCLl##Type##_append(TCList *list, Type x) {          \
     _TCLl##Type##_insert(&list->_st, x);                                   \
   }                                                                        \
                                                                            \
-  static inline void _TCLl##Type##_unshift(TCList *list, Type x) {         \
+  static inline void _TCLl##Type##_prepend(TCList *list, Type x) {         \
     _TCLl##Type##_insert(list->_st.next, x);                               \
   }
 
@@ -198,11 +198,11 @@ extern unsigned char tc_list_empty(TCList *);
     return _tc_list_insert(iter, &node->Prop);                                 \
   }                                                                            \
                                                                                \
-  static inline void _TCLl##Node##_push(TCList *list, Node *node) {            \
+  static inline void _TCLl##Node##_append(TCList *list, Node *node) {          \
     _TCLl##Node##_insert(&list->_st, node);                                    \
   }                                                                            \
                                                                                \
-  static inline void _TCLl##Node##_unshift(TCList *list, Node *node) {         \
+  static inline void _TCLl##Node##_prepend(TCList *list, Node *node) {         \
     _TCLl##Node##_insert(list->_st.next, node);                                \
   }
 

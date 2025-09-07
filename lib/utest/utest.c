@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "list.h"
+#include "print.h"
 
 static TCList *_mock_data_list;
 
@@ -21,19 +22,24 @@ void _tc_ut_abort(TCUtState *state, int err) {
                cur) {
     _TCMockData *mock_data = tc_list_at(cur, _TCMockData);
     tc_list_free(mock_data->data, _tc_void_ptr);
-    // TODO: free param nodes
-    // free(mock_data->param);
+    _tc_ut_mock_arg_clear(mock_data);
+    tc_list_free(mock_data->args, _TCMockArg);
   }
 
   tc_list_free(_mock_data_list, _TCMockData);
 
   free(state);
 
+  tc_print_clean(stdout);
+  tc_print_clean(stderr);
+
   exit(err);
 }
 
 // run test handlers
 void _tc_ut_run(_tc_ut_handler *ut_handler, size_t len) {
+  tc_print_set_buf(256);
+
   TCUtState *state = (TCUtState *)malloc(sizeof(TCUtState));
   if (_mock_data_list == NULL) _mock_data_list = tc_list_new();
 
@@ -80,12 +86,12 @@ inline void _tc_ut(TCUtState *state, char *name) { state->name = name; }
 void _tc_ut_out(TCUtState *state) {
   if (state->file == NULL || state->assert_rt == NULL ||
       tc_list_empty(state->assert_rt) == 1) {
-    fprintf(stderr, "No test cases or assertions found!\n");
+    tc_print(stderr, "No test cases or assertions found!\n");
     _tc_ut_abort(state, ENODATA);
   }
 
-  fprintf(stdout, "\n%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
-          state->file);
+  tc_print(stdout, "\n%s %s\n\n", state->passed ? "[PASS]" : "[FAIL]",
+           state->file);
 
   TCListIter end = tc_list_end(state->assert_rt);
   tc_list_each(tc_list_begin(state->assert_rt), end, iter) {
@@ -96,11 +102,11 @@ void _tc_ut_out(TCUtState *state) {
         next_iter != end ? tc_list_at(next_iter, _TCAssertRt) : NULL;
 
     if (!next_assert_rt || assert_rt->name != next_assert_rt->name) {
-      fprintf(assert_rt->passed ? stdout : stderr, "       %s %s\n",
-              assert_rt->passed ? "✔" : "✘", assert_rt->name);
+      tc_print(assert_rt->passed ? stdout : stderr, "       %s %s\n",
+               assert_rt->passed ? "✔" : "✘", assert_rt->name);
 
       if (assert_rt->passed == 0) {
-        fprintf(stderr, "\n         Error: line %d\n", assert_rt->lno);
+        tc_print(stderr, "\n         Error: line %d\n", assert_rt->lno);
         _tc_ut_abort(state, EIO);
       }
     }
@@ -114,7 +120,7 @@ void _tc_ut_out(TCUtState *state) {
 inline void *tc_ut_malloc(size_t size) {
   char *fn = "malloc";
   _tc_ut_return(fn, NULL);
-  _tc_ut_mock(fn);
+  _tc_ut_call(fn);
 
   return malloc(size);
 }
@@ -122,12 +128,26 @@ inline void *tc_ut_malloc(size_t size) {
 inline void tc_ut_free(void *ptr) {
   char *fn = "free";
   _tc_ut_return(fn, NULL);
-  _tc_ut_mock(fn);
+  _tc_ut_call(fn);
 
   free(ptr);
 }
 
-_TCMockData *_tc_ut_mock_fd(char *fn) {
+void _tc_ut_mock_arg_clear(_TCMockData *mk) {
+  if (mk == NULL) {
+    return;
+  }
+  TCListIter begin = tc_list_begin(mk->args);
+  TCListIter end = tc_list_end(mk->args);
+  tc_list_each(begin, end, cur) {
+    _TCMockArg *arg = tc_list_at(cur, _TCMockArg);
+    if (arg && arg->value) {
+      free(arg->value);
+    }
+  }
+}
+
+_TCMockData *_tc_ut_mock_fd(const char *fn) {
   TCListIter begin = tc_list_begin(_mock_data_list);
   TCListIter end = tc_list_end(_mock_data_list);
 
@@ -141,7 +161,25 @@ _TCMockData *_tc_ut_mock_fd(char *fn) {
   return NULL;
 }
 
-void *_tc_ut_mock(char *fn) {
+_TCMockArg *_tc_ut_mock_arg_fd(const char *fn, char *name) {
+  _TCMockData *mk = _tc_ut_mock_fd(fn);
+  if (mk) {
+    TCListIter begin = tc_list_begin(mk->args);
+    TCListIter end = tc_list_end(mk->args);
+
+    tc_list_each(begin, end, cur) {
+      _TCMockArg *arg = tc_list_at(cur, _TCMockArg);
+
+      if (strcmp(arg->name, name) == 0) {
+        return arg;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+void *_tc_ut_call(char *fn) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
 
   if (mk != NULL) {
@@ -153,6 +191,8 @@ void *_tc_ut_mock(char *fn) {
 
   // abort if no mock data provided
   _tc_ut_abort(NULL, ENODATA);
+
+  return NULL;
 }
 
 void _tc_ut_mock_clear(char *fn) {
@@ -161,7 +201,8 @@ void _tc_ut_mock_clear(char *fn) {
   if (mk != NULL) {
     mk->call_num = 0;
     tc_list_clear(mk->data, _tc_void_ptr);
-    // TODO: clear param status
+    _tc_ut_mock_arg_clear(mk);
+    tc_list_clear(mk->args, _TCMockArg);
   }
 }
 
@@ -179,13 +220,32 @@ void _tc_ut_return(char *fn, void *value) {
                  ((_TCMockData){.fn = fn, .data = data, .call_num = 0}));
 }
 
+void _tc_ut_arg(const char *fn, char *name, void *val_ptr, size_t len) {
+  _TCMockData *mk = _tc_ut_mock_fd(fn);
+  _TCMockArg arg =
+      ((_TCMockArg){.name = name, .value = (char *)(malloc(len + 1))});
+
+  strncpy(arg.value, val_ptr, len);
+
+  ((char *)arg.value)[len] = '\0';
+
+  if (mk) {
+    tc_list_append(mk->args, _TCMockArg, arg);
+    return;
+  }
+
+  TCList *args = tc_list_new();
+  tc_list_append(args, _TCMockArg, arg);
+  tc_list_append(_mock_data_list, _TCMockData,
+                 ((_TCMockData){.fn = fn, .args = args, .call_num = 0}));
+}
+
 /***********************************************************
  *                     Assert utils                        *
  ***********************************************************/
 
 // store assert result
-inline void _tc_ut_assert(TCUtState *state, unsigned int lno,
-                          unsigned char passed) {
+void _tc_ut_assert(TCUtState *state, unsigned int lno, unsigned char passed) {
   state->passed &= passed;
 
   tc_list_append(
@@ -199,8 +259,20 @@ inline void _tc_ut_assert(TCUtState *state, unsigned int lno,
 
 inline unsigned char _tc_ut_assert_called(char *fn, uint32_t num) {
   _TCMockData *mk = _tc_ut_mock_fd(fn);
+
   if (mk != NULL) {
     return mk->call_num == num;
+  }
+
+  return 0;
+}
+
+unsigned char _tc_ut_assert_arg_str(const char *fn, char *name,
+                                    char *expected) {
+  _TCMockArg *arg = _tc_ut_mock_arg_fd(fn, name);
+
+  if (arg && arg->value) {
+    return strcmp(expected, (char *)arg->value) == 0;
   }
 
   return 0;

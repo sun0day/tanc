@@ -39,12 +39,18 @@ TCListOf(_TCAssertRt);
  * Function mock data
  */
 typedef struct {
-  char *fn;
+  const char *fn;
   TCList *data;
-  TCList *param;
+  TCList *args;
   uint32_t call_num;
 } _TCMockData;
 TCListOf(_TCMockData);
+
+typedef struct {
+  char *name;
+  void *value;
+} _TCMockArg;
+TCListOf(_TCMockArg);
 
 /*
  * All test cases assert results in a file
@@ -69,11 +75,14 @@ extern void _tc_ut_run(_tc_ut_handler *, size_t);
 extern void _tc_ut_fs(TCUtState *, char *);
 extern void _tc_ut(TCUtState *, char *);
 extern void _tc_ut_out(TCUtState *);
-extern void *_tc_ut_mock(char *);
+extern void *_tc_ut_call(char *);
 extern void _tc_ut_mock_clear(char *);
+extern void _tc_ut_arg(const char *, char *, void *, size_t);
 extern void _tc_ut_return(char *, void *);
 extern void _tc_ut_assert(TCUtState *, unsigned int, unsigned char);
-extern unsigned char _tc_ut_assert_called(char *, uint32_t num);
+extern unsigned char _tc_ut_assert_called(char *, uint32_t);
+extern unsigned char _tc_ut_assert_arg_str(const char *, char *, char *);
+extern void _tc_ut_mock_arg_clear(_TCMockData *);
 
 /*
  * Run test handlers
@@ -95,9 +104,12 @@ extern unsigned char _tc_ut_assert_called(char *, uint32_t num);
   } while (0);
 
 #define tc_ut_mock(returns, fn, ...) \
-  returns fn(__VA_ARGS__) { return *(returns *)_tc_ut_mock(#fn); }
+  returns fn(__VA_ARGS__) { return *(returns *)_tc_ut_call(#fn); }
 
 #define tc_ut_return(fn, data) _tc_ut_return(#fn, (void *)&data)
+
+#define tc_ut_arg_str(value) \
+  _tc_ut_arg(__func__, #value, value, value == NULL ? 0 : strlen(value))
 
 /*
  * Detect whether a expression is truthy, abort if falsy
@@ -109,6 +121,7 @@ extern unsigned char _tc_ut_assert_called(char *, uint32_t num);
   } while(0);
 
 #define tc_ut_assert_called(fn, num) tc_ut_assert(_tc_ut_assert_called(#fn, num))
+#define tc_ut_assert_arg_str(fn, name, value) tc_ut_assert(_tc_ut_assert_arg_str(#fn, #name, (char *)&value))
 #define tc_ut_mock_clear(fn) _tc_ut_mock_clear(#fn)
 
 #endif
